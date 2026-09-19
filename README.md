@@ -1,3 +1,14 @@
+## ESP32 IVES DEVICE
+---
+
+<p align="center">
+  <img src="https://github.com/Muhammed-Turgut/imageRaw/blob/main/esp32_wroom_3d.png?raw=true" width="1600" height="1090" />
+</p>
+
+
+
+
+
 ## Donanım Bağlantı Haritası (ESP32-WROOM-32D)
 
 ### Güç Hattı
@@ -22,6 +33,18 @@
 | CS | GPIO 15 |
 | DC/A0 | GPIO 21 |
 | RST | GPIO 22 |
+| LED | GPIO 25 |
+
+### Button input
+
+| Buton | ESP32 Pin | Not |
+|---|---|---|
+| Buton 1 | GPIO 13 | Dahili pull-down (INPUT_PULLDOWN) |
+| Buton 2 | GPIO 14 | Dahili pull-down (INPUT_PULLDOWN) |
+| Buton 3 | GPIO 12 | Dahili pull-down — açılışta basılı tutma! |
+| Buton 4 | GPIO 32 | Dahili pull-down (INPUT_PULLDOWN) |
+| Buton 5 | GPIO 33 | Dahili pull-down (INPUT_PULLDOWN) |
+| Buton 6 | GPIO 26 | Dahili pull-down (INPUT_PULLDOWN) |
 
 ### SD Kart Modülü (SPI)
 
