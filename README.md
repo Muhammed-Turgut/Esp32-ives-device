@@ -6,16 +6,6 @@
 </p>
 
 
-
-
-
-## Donanım Bağlantı Haritası (ESP32-WROOM-32D)
-
-<p align="center">
-  <img src="https://github.com/Muhammed-Turgut/imageRaw/blob/main/esp32_wroom_3d.png?raw=true" width="1600" height="1090" />
-</p>
-
-
 ### Güç Hattı
 
 | Bileşen | Pin | Bağlantı |
@@ -46,10 +36,10 @@
 |---|---|---|
 | Buton 1 | GPIO 13 | Dahili pull-down (INPUT_PULLDOWN) |
 | Buton 2 | GPIO 14 | Dahili pull-down (INPUT_PULLDOWN) |
-| Buton 3 | GPIO 12 | Dahili pull-down — açılışta basılı tutma! |
-| Buton 4 | GPIO 32 | Dahili pull-down (INPUT_PULLDOWN) |
-| Buton 5 | GPIO 33 | Dahili pull-down (INPUT_PULLDOWN) |
-| Buton 6 | GPIO 26 | Dahili pull-down (INPUT_PULLDOWN) |
+| Buton 3 | GPIO 34 | Input-only — harici 10kΩ pull-down şart |
+| Buton 4 | GPIO 35 | Input-only — harici 10kΩ pull-down şart |
+| Buton 5 | GPIO 36 (VP) | Input-only — harici 10kΩ pull-down şart |
+| Buton 6 | GPIO 39 (VN) | Input-only — harici 10kΩ pull-down şart |
 
 ### SD Kart Modülü (SPI)
 
@@ -62,18 +52,29 @@
 | MISO | GPIO 19 |
 | CS | GPIO 5 |
 
-### NRF24L01 (SPI)
+### NRF24L01 #1 (SPI)
 
-| NRF24L01 Pin | ESP32 Pin |
+| Pin | ESP32 Pin |
 |---|---|
-| VCC | 3.3V (10-100µF kondansatör ile) |
+| VCC | 3.3V (kondansatörlü) |
 | GND | GND |
-| SCK | GPIO 18 |
-| MOSI | GPIO 23 |
-| MISO | GPIO 19 |
+| SCK | GPIO 18 (ortak) |
+| MOSI | GPIO 23 (ortak) |
+| MISO | GPIO 19 (ortak) |
 | CE | GPIO 27 |
 | CSN | GPIO 4 |
-| IRQ | Kullanılmıyor |
+
+### NRF24L01 #2 (SPI)
+
+| Pin | ESP32 Pin |
+|---|---|
+| VCC | 3.3V (kondansatörlü) |
+| GND | GND |
+| SCK | GPIO 18 (ortak) |
+| MOSI | GPIO 23 (ortak) |
+| MISO | GPIO 19 (ortak) |
+| CE | GPIO 32 |
+| CSN | GPIO 33 |
 
 ### GPS Modülü (GY-NEO6MV2, UART2)
 
