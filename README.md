@@ -11,6 +11,11 @@
 
 ## Donanım Bağlantı Haritası (ESP32-WROOM-32D)
 
+<p align="center">
+  <img src="https://github.com/Muhammed-Turgut/imageRaw/blob/main/esp32_wroom_3d.png?raw=true" width="1600" height="1090" />
+</p>
+
+
 ### Güç Hattı
 
 | Bileşen | Pin | Bağlantı |
