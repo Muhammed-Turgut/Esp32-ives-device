@@ -1,54 +1,79 @@
 /*
-  NRF24L01 #1 ALGILAMA TESTI (sadece Serial Monitor)
+  GPS (GY-NEO6MV2) BAGLANTI TESTI (Serial Monitor)
   ------------------------------------------------------
   Pinler:
-    CE  = GPIO 27
-    CSN = GPIO 4
-    SCK = GPIO 18 (ortak SPI)
-    MOSI = GPIO 23 (ortak SPI)
-    MISO = GPIO 19 (ortak SPI)
+    GPS TX -> ESP32 GPIO 16 (RX2)
+    GPS RX -> ESP32 GPIO 17 (TX2)
+    VCC    -> 3.3V
+    GND    -> GND
 
-  Serial Monitor'u 115200 baud'da ac, sonucu orada gor.
+  Bu kod GPS modulunden gelen ham NMEA cumlelerini oldugu
+  gibi Serial Monitor'e basar. Modul dogru bagliysa, acik
+  havada ya da pencere kenarinda birkaç saniye icinde
+  "$GPGGA", "$GPRMC" gibi satirlar gormeye baslarsin.
+
+  NOT: Ic mekanda (bina icinde) GPS fix almak zor olabilir,
+  bu normaldir - satirlarin gelmesi zaten baglantinin
+  calistigini kanitlar, fix almasi ayri bir konu.
 */
 
 #include <Arduino.h>
-#include <SPI.h>
-#include <RF24.h>
+#include <HardwareSerial.h>
 
-#define NRF1_CE   4
-#define NRF1_CSN  27
+#define GPS_RX_PIN 16   // ESP32 RX2 <- GPS TX
+#define GPS_TX_PIN 17   // ESP32 TX2 -> GPS RX
+#define GPS_BAUD   9600 // GY-NEO6MV2 varsayilan baud hizi
 
+HardwareSerial GPSSerial(2); // UART2 kullan
 
-RF24 radio1(NRF1_CE, NRF1_CSN);
+unsigned long lastByteTime = 0;
+bool anyDataSeen = false;
 
 void setup() {
   Serial.begin(115200);
   delay(300);
   Serial.println();
-  Serial.println("=== NRF24L01 #1 baglanti testi ===");
+  Serial.println("=== GPS baglanti testi basliyor ===");
+  Serial.println("NMEA verisi bekleniyor (birkac saniye surebilir)...");
+  Serial.println("--------------------------------------------------");
 
-  // Ortak SPI hattini baslat (SCK, MISO, MOSI)
-  SPI.begin(18, 19, 23);
-
-  bool beginOk = radio1.begin();
-  bool connected = radio1.isChipConnected();
-
-  Serial.print("begin(): ");
-  Serial.println(beginOk ? "basarili" : "basarisiz");
-
-  Serial.print("isChipConnected(): ");
-  Serial.println(connected ? "EVET" : "HAYIR");
-
-  Serial.println("--------------------------------");
-  if (beginOk && connected) {
-    Serial.println(">>> NRF24L01 #1 ALGILANDI <<<");
-  } else {
-    Serial.println(">>> NRF24L01 #1 ALGILANMADI - kablolamayi kontrol et <<<");
-  }
+  GPSSerial.begin(GPS_BAUD, SERIAL_8N1, GPS_RX_PIN, GPS_TX_PIN);
 }
 
 void loop() {
-  delay(2000);
-  bool connected = radio1.isChipConnected();
-  Serial.println(connected ? "NRF #1: BAGLI" : "NRF #1: BAGLANTI YOK");
+  // GPS'den gelen her baytı oldugu gibi Serial'e aktar
+  while (GPSSerial.available()) {
+    char c = GPSSerial.read();
+    Serial.write(c);
+    anyDataSeen = true;
+    lastByteTime = millis();
+  }
+
+  // 5 saniyede hic veri gelmediyse uyari ver
+  static unsigned long lastWarn = 0;
+  if (!anyDataSeen && millis() - lastWarn > 5000) {
+    Serial.println(">>> HENUZ VERI GELMEDI - kablolamayi kontrol et <<<");
+    Serial.println("    (TX/RX ters baglanmis olabilir, VCC/GND kontrol et)");
+    lastWarn = millis();
+  }
 }
+
+/*
+  SORUN GIDERME
+  --------------
+  1) Hic satir gelmiyor:
+     - TX/RX'i ters baglamis olabilirsin: GPS TX -> ESP32 RX (16),
+       GPS RX -> ESP32 TX (17). Ters baglarsan hic veri gelmez.
+     - VCC/GND kontrol et, modulun uzerindeki LED yaniyor mu bak
+       (cogu GY-NEO6MV2 modulunde guc LED'i ve fix LED'i ayri olur).
+     - Baud hizi yanlis olabilir - bazi GY-NEO6MV2 modulleri 4800
+       veya 38400 ile gelir, 9600 calismazsa bunlari dene.
+
+  2) Anlamsiz/bozuk karakterler geliyor (kare, cizgi vs):
+     - Baud hizi uyusmuyor demektir, GPS_BAUD degerini degistir.
+
+  3) "$GP..." ile baslayan satirlar geliyor ama fix alamiyor:
+     - Baglanti calisiyor demektir, sorun yok. Acik havada,
+       gokyuzu gorebilecegin bir yerde birkac dakika bekle,
+       ilk fix (cold start) 30 saniye - birkac dakika surebilir.
+*/
