@@ -1,9 +1,9 @@
 /*
-  NRF24L01 #2 ALGILAMA TESTI (sadece Serial Monitor)
+  NRF24L01 #1 ALGILAMA TESTI (sadece Serial Monitor)
   ------------------------------------------------------
   Pinler:
-    CE  = GPIO 32
-    CSN = GPIO 33
+    CE  = GPIO 27
+    CSN = GPIO 4
     SCK = GPIO 18 (ortak SPI)
     MOSI = GPIO 23 (ortak SPI)
     MISO = GPIO 19 (ortak SPI)
@@ -15,22 +15,23 @@
 #include <SPI.h>
 #include <RF24.h>
 
-#define NRF2_CE   32
-#define NRF2_CSN  33
+#define NRF1_CE   4
+#define NRF1_CSN  27
 
-RF24 radio2(NRF2_CE, NRF2_CSN);
+
+RF24 radio1(NRF1_CE, NRF1_CSN);
 
 void setup() {
   Serial.begin(115200);
   delay(300);
   Serial.println();
-  Serial.println("=== NRF24L01 #2 baglanti testi ===");
+  Serial.println("=== NRF24L01 #1 baglanti testi ===");
 
   // Ortak SPI hattini baslat (SCK, MISO, MOSI)
   SPI.begin(18, 19, 23);
 
-  bool beginOk = radio2.begin();
-  bool connected = radio2.isChipConnected();
+  bool beginOk = radio1.begin();
+  bool connected = radio1.isChipConnected();
 
   Serial.print("begin(): ");
   Serial.println(beginOk ? "basarili" : "basarisiz");
@@ -40,16 +41,14 @@ void setup() {
 
   Serial.println("--------------------------------");
   if (beginOk && connected) {
-    Serial.println(">>> NRF24L01 #2 ALGILANDI <<<");
+    Serial.println(">>> NRF24L01 #1 ALGILANDI <<<");
   } else {
-    Serial.println(">>> NRF24L01 #2 ALGILANMADI - kablolamayi kontrol et <<<");
+    Serial.println(">>> NRF24L01 #1 ALGILANMADI - kablolamayi kontrol et <<<");
   }
 }
 
 void loop() {
-  // Her 2 saniyede bir tekrar kontrol et, kablo oynatirken
-  // canli olarak takip edebilesin diye.
   delay(2000);
-  bool connected = radio2.isChipConnected();
-  Serial.println(connected ? "NRF #2: BAGLI" : "NRF #2: BAGLANTI YOK");
+  bool connected = radio1.isChipConnected();
+  Serial.println(connected ? "NRF #1: BAGLI" : "NRF #1: BAGLANTI YOK");
 }
