@@ -43,14 +43,18 @@
 
 ### SD Kart Modülü (SPI)
 
+Modül: **Robo90 Micro SD Kart Okuyucu** (HW-125, “Arduino uyumlu”). Üzerinde AMS1117-3.3 var; VCC **5V** ister. 3.3V VCC ile kart konuşmaz (`CMD0 0xFF`).
+
 | SD Pin | ESP32 Pin |
 |---|---|
-| VCC | 3.3V |
+| VCC | **5V** (3.3V değil) |
 | GND | GND |
 | SCK | GPIO 18 |
 | MOSI | GPIO 23 |
 | MISO | GPIO 19 |
 | CS | GPIO 5 |
+
+> MOSI / MISO / SCK / CS 3.3V kalmalı; yalnızca VCC 5V. Kart **FAT32** (veya 2 GB FAT16). exFAT (`SD.h`) okunmaz.
 
 ### NRF24L01 #1 (SPI)
 
