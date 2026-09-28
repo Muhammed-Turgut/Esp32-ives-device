@@ -1,8 +1,8 @@
 #include <Arduino.h>
 #include <SPI.h>
-#include <SD.h>
 #include <Adafruit_GFX.h>
 #include <Adafruit_ST7735.h>
+#include "ui_common.h"
 
 #define TFT_CS  15
 #define TFT_DC  21
@@ -10,21 +10,13 @@
 #define TFT_LED 25
 #define SD_CS   5
 
-#define SPI_SCK  18
-#define SPI_MISO 19
-#define SPI_MOSI 23
+#define BTN_LEFT  34
+#define BTN_RIGHT 39
 
 Adafruit_ST7735 tft(TFT_CS, TFT_DC, TFT_RST);
-int lineY = 4;
 
-void logLine(const char* msg, uint16_t color = ST77XX_WHITE) {
-  tft.setCursor(2, lineY);
-  tft.setTextColor(color);
-  tft.setTextSize(1);
-  tft.print(msg);
-  lineY += 10;
-  Serial.println(msg);
-}
+static int screen = 0;
+const int SCREEN_COUNT = 5;
 
 void parkSpi() {
   const uint8_t highPins[] = {SD_CS, TFT_CS, 4, 27, 32, 33};
@@ -34,52 +26,70 @@ void parkSpi() {
   }
 }
 
-void setup() {
-  Serial.begin(115200);
-  parkSpi();
-
-  pinMode(TFT_LED, OUTPUT);
-  digitalWrite(TFT_LED, HIGH);
-  tft.initR(INITR_144GREENTAB);
-  tft.setRotation(0);
-  tft.fillScreen(ST77XX_BLACK);
-  logLine("SD yaz / oku");
-
-  digitalWrite(TFT_CS, HIGH);
-  SPI.begin(SPI_SCK, SPI_MISO, SPI_MOSI, SD_CS);
-
-  if (!SD.begin(SD_CS, SPI, 1000000, "/sd", 5, true)) {
-    logLine("SD.begin YOK", ST77XX_RED);
-    return;
-  }
-  logLine("SD.begin VAR", ST77XX_GREEN);
-
-  File f = SD.open("/ives.txt", FILE_WRITE);
-  if (!f) {
-    logLine("yazma YOK", ST77XX_RED);
-    return;
-  }
-  f.println("Merhaba IVES");
-  f.close();
-  logLine("yazildi");
-
-  f = SD.open("/ives.txt");
-  if (!f) {
-    logLine("okuma YOK", ST77XX_RED);
-    return;
-  }
-  String s = f.readStringUntil('\n');
-  s.trim();
-  f.close();
-  logLine("okunan:", ST77XX_CYAN);
-  logLine(s.c_str(), ST77XX_CYAN);
-
-  if (s == "Merhaba IVES") {
-    logLine("eslesme TAMAM", ST77XX_GREEN);
-  } else {
-    logLine("eslesme YOK", ST77XX_YELLOW);
+void showScreen() {
+  switch (screen) {
+    case 0:
+      drawGpsView();
+      break;
+    case 1:
+      drawWifiView();
+      break;
+    case 2:
+      drawBluetoothView();
+      break;
+    case 3:
+      drawTestView();
+      break;
+    default:
+      drawSettingsView();
+      break;
   }
 }
 
+void setup() {
+  parkSpi();
+  pinMode(TFT_LED, OUTPUT);
+  digitalWrite(TFT_LED, HIGH);
+  pinMode(BTN_LEFT, INPUT);
+  pinMode(BTN_RIGHT, INPUT);
+
+  tft.initR(INITR_144GREENTAB);
+  tft.setRotation(0);
+  showScreen();
+}
+
 void loop() {
+  static bool leftWas = false;
+  static bool rightWas = false;
+  bool left = digitalRead(BTN_LEFT);
+  bool right = digitalRead(BTN_RIGHT);
+
+  if (left && !leftWas) {
+    screen = (screen + SCREEN_COUNT - 1) % SCREEN_COUNT;
+    showScreen();
+  }
+  if (right && !rightWas) {
+    screen = (screen + 1) % SCREEN_COUNT;
+    showScreen();
+  }
+  leftWas = left;
+  rightWas = right;
+
+  switch (screen) {
+    case 0:
+      tickGpsAnim();
+      break;
+    case 1:
+      tickWifiAnim();
+      break;
+    case 3:
+      tickTestAnim();
+      break;
+    case 4:
+      tickSettingsAnim();
+      break;
+    default:
+      break;
+  }
+  delay(20);
 }
