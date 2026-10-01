@@ -1,10 +1,9 @@
-#include "ui_common.h"
+#include "../ui_common.h"
 #include "assets/images/image_ButtonLeft_bits.h"
 #include "assets/images/image_ButtonRight_bits.h"
 #include "assets/images/image_bluetooth_bits.h"
 
 void drawBluetoothView() {
-  tft.fillScreen(0x0);
   tft.drawRect(1, 0, 127, 128, 0x8E09);
   tft.setTextColor(0xFFFF);
   tft.setTextSize(1);

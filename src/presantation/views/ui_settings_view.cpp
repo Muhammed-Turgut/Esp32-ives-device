@@ -1,4 +1,4 @@
-#include "ui_common.h"
+#include "../ui_common.h"
 #include "assets/images/image_ButtonLeft_bits.h"
 #include "assets/images/image_ButtonRight_bits.h"
 #include "assets/animations/settings_64_64_28f.h"

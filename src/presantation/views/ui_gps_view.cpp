@@ -1,4 +1,4 @@
-#include "ui_common.h"
+#include "../ui_common.h"
 #include "assets/images/image_ButtonLeft_bits.h"
 #include "assets/images/image_ButtonRight_bits.h"
 #include "assets/animations/map_marker_64_64_28f.h"
@@ -19,6 +19,7 @@ void drawGpsView() {
 }
 
 void tickGpsAnim() {
+  
   int frame = (millis() / 42) % 28;
   if (frame == map_marker_64_64_28f_frame) {
     return;

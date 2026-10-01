@@ -9,12 +9,16 @@ inline void uiPrint(int16_t x, int16_t y, const char* s) {
   tft.print(s);
 }
 
+
+//drawScreenView
 void drawGpsView();
 void drawWifiView();
 void drawBluetoothView();
 void drawTestView();
 void drawSettingsView();
 
+
+//animations
 void tickGpsAnim();
 void tickWifiAnim();
 void tickTestAnim();
