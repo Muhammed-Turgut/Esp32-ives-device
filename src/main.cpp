@@ -4,6 +4,8 @@
 #include <Adafruit_ST7735.h>
 #include <stack>
 #include "presantation/views/ui.h"
+#include "presantation/ui_common.h"
+#include "gps.h"
 using namespace std;
 
 #define TFT_CS  15
@@ -12,14 +14,18 @@ using namespace std;
 #define TFT_LED 25
 #define SD_CS   5
 
-#define BTN_LEFT  34
-#define BTN_RIGHT 39
+#define BTN_LEFT  34 //LEFT
+#define BTN_RIGHT 39 //Right
 #define BTN_OK 35 // ok buttonu
+#define BTN_BACK 13 //BACK BUTTON
 
 
-std::stack<int> screenStack;  
+
+//Stack tekrarı yasaklamıyor o sorun çzöülmemli
+stack<int> screenStack;  
 
 Adafruit_ST7735 tft(TFT_CS, TFT_DC, TFT_RST);
+Gps gps;
 
 static int screen = 0;
 const int SCREEN_COUNT = 5;
@@ -32,8 +38,52 @@ void parkSpi() {
   }
 }
 
-void showScreen() {
-  selecteMenuView(screen);
+void showScreen(std::stack<int>& s) {
+  if(s.empty()) {
+    selecteMenuView(screen); 
+      // menü
+  } else {
+     
+      switch(s.top()){
+
+        case 0:
+        //Gps Detaylarını içerenbe ekran dönülecek.
+        //ui_gps_detail_view();
+        
+        static unsigned long lastGpsDraw = 0;
+        if (!screenStack.empty() && screenStack.top() == 0) {
+          if (millis() - lastGpsDraw > 1000) {
+           drawScreenGPSDetailView();
+           lastGpsDraw = millis();
+          }
+        }
+        break;
+
+        case 1:
+        //Wifi özellikleri için detay sayfası listelenecek.
+        // ui_wifi_detail_view();
+        drawScreenWifiDetailView();
+        break;
+
+        case 2:
+        //Bluetooth özellikleri için ekranda listeleme yapıalcak
+        //ui_bluetooth_detail_view();
+        break;
+
+        case 3:
+        //test özellikleri için ekrnada listeleme yapılacak
+        //ui_tests_detail_view();
+        break;
+
+        case 4:
+        //Settings özellikleri için ekranda listeleme yapılacak
+        //ui_settings_detail_view();
+        break;
+
+      }
+
+
+  }
 }
 
 void setup() {
@@ -43,46 +93,78 @@ void setup() {
   pinMode(BTN_LEFT, INPUT);
   pinMode(BTN_RIGHT, INPUT);
   pinMode(BTN_OK, INPUT);
+  pinMode(BTN_BACK, INPUT);
   Serial.begin(115200);
+  Serial2.begin(9600, SERIAL_8N1, 16, 17);
 
   tft.initR(INITR_144GREENTAB);
   tft.setRotation(0);
-  showScreen();
+
+  showScreen(screenStack);
 }
 
 void loop() {
+  
+  gps.update();
 
   static bool leftWas = false;
   static bool rightWas = false;
   static bool btnOkWas = false;
+  static bool btnBackWas = false;
 
   bool left = digitalRead(BTN_LEFT);
   bool right = digitalRead(BTN_RIGHT);
   bool btnOk = digitalRead(BTN_OK);
+  bool btnBack = digitalRead(BTN_BACK);
+
+ 
+  if(screenStack.empty()){
 
   if (left && !leftWas) {
     screen = (screen + SCREEN_COUNT - 1) % SCREEN_COUNT;
     selecteMenuView(screen);
     tft.fillRect(31, 32, 69, 66, 0x0);
   }
+
   if (right && !rightWas) {
     screen = (screen + 1) % SCREEN_COUNT;
     selecteMenuView(screen);
     tft.fillRect(31, 32, 69, 66, 0x0);
   }
-  if(btnOk && !btnOkWas){
-    screenStack.push(screen);
-    Serial.println("buttona tiklandi");
-    Serial.println(screenStack.top());
+    selecteMenuAnimations(screen);
+  }
 
+  if(btnOk && !btnOkWas){
+    //Bu if bloğu screen stack boş ise ekelme yapılsın boş 
+    //değilse ekleme yepılmasına gerek yoktur
+
+    if (screenStack.empty())
+    {
+     screenStack.push(screen);
+    showScreen(screenStack);
+    }
+
+  }
+
+  if(btnBack && !btnBackWas){
+
+    if(!screenStack.empty()){
+      screenStack.pop();
+      showScreen(screenStack);
+    }
     
   }
 
+  
+
+  //Bu değişkenelr buttonlara bir kez mi basıldı hala 
+  //basılımı buttonlara, bunu denetliyor.
   leftWas = left;
   rightWas = right;
-
-  selecteMenuAnimations(screen);
+  btnOkWas = btnOk;
+  btnBackWas = btnBack;
 
   delay(20);
+
 
 }

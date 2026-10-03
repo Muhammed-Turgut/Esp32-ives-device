@@ -29,6 +29,7 @@ void selecteMenuAnimations(int screen){
     case 0:
       tickGpsAnim();
       break;
+      
     case 1:
       tickWifiAnim();
       break;
