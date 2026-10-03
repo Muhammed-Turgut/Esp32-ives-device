@@ -49,14 +49,7 @@ void showScreen(std::stack<int>& s) {
         case 0:
         //Gps Detaylarını içerenbe ekran dönülecek.
         //ui_gps_detail_view();
-        
-        static unsigned long lastGpsDraw = 0;
-        if (!screenStack.empty() && screenStack.top() == 0) {
-          if (millis() - lastGpsDraw > 1000) {
-           drawScreenGPSDetailView();
-           lastGpsDraw = millis();
-          }
-        }
+        drawScreenGPSDetailView();
         break;
 
         case 1:
@@ -154,6 +147,15 @@ void loop() {
     }
     
   }
+
+  static unsigned long lastGpsDraw = 0;
+        if (!screenStack.empty() && screenStack.top() == 0) {
+          //sürekli olarak draw detail in çizilmeisi için ekledik bunu
+          if (millis() - lastGpsDraw > 1000) {
+           drawScreenGPSDetailView();
+           lastGpsDraw = millis();
+          }
+        }
 
   
 

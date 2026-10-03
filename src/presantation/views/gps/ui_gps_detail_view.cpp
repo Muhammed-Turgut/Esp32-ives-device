@@ -1,5 +1,6 @@
 #include "assets/images/image_map_navigation_pin_location_bits.h"
 #include "assets/images/image_cursor_bits.h"
+#include "assets/images/image_satellite_icon_bits.h"
 #include "presantation/ui_common.h"
 #include <math.h>
 
@@ -9,6 +10,7 @@
 void drawScreenGPSDetailView() {
 
    drawScreenGPSFrameView();
+   drawCompanentNumberOfDetectedSatellites(gps.satellites());
 
     if (!gps.hasFix())
     {
@@ -23,23 +25,29 @@ void drawScreenGPSDetailView() {
     else {
         drawScreenCompassCompanent();
         drawScreenNavigasyonCursorCompanenet((float)gps.courseDeg());
+        drawCompanentLatituedAndLongitued(gps.latitude(), gps.longitude());
     }
 
-    
+}
 
+void drawCompanentNumberOfDetectedSatellites(uint32_t count) {
+  tft.drawBitmap(92, 5, image_satellite_icon_bits, 13, 13, 0xFFFF);
+
+  char buf[8];
+  snprintf(buf, sizeof(buf), ":%u", (unsigned)count);
+
+  tft.setTextColor(0xFFFF);
+  tft.setTextSize(1);
+  uiPrint(110, 8, buf);
 }
 
 void drawScreenGPSFrameView(){
      tft.fillScreen(0x0);
-    // rect 1
     tft.drawRect(0, 0, 128, 128, 0x8E09);
-    // rect 18
     tft.drawRect(0, 0, 128, 22, 0x8E09);
-    // string 19
     tft.setTextColor(0x8E09);
     tft.setTextSize(1);
     uiPrint(27, 8, "GPS");
-    // rect 21
     tft.fillRoundRect(65, 111, 59, 12, 5, 0x8E09);
     tft.setTextColor(0x0);
     uiPrint(72, 113,"look map");
@@ -48,6 +56,22 @@ void drawScreenGPSFrameView(){
     uiPrint(6, 114,"back");
     // map_navigation_pin_location_2__Streamline_Pixel
     tft.drawBitmap(5, 3, image_map_navigation_pin_location_bits, 16, 16, 0x8E09);
+}
+
+void drawCompanentLatituedAndLongitued(double latitude, double longitude) {
+  char lat[16];
+  char lon[16];
+  dtostrf(latitude, 0, 6, lat);
+  dtostrf(longitude, 0, 6, lon);
+
+  tft.setTextColor(0x8E09);
+  tft.setTextSize(1);
+  uiPrint(6, 29, "latitude:");
+  uiPrint(6, 41, "longitude:");
+
+  tft.setTextColor(0xFFFF);
+  uiPrint(61, 29, lat);
+  uiPrint(66, 41, lon);
 }
 
 void drawScreenCompassCompanent() {
