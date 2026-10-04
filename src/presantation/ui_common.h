@@ -25,6 +25,12 @@ void drawCompanentLatituedAndLongitued(double latitude, double longitude);
 
 //wifi detay ekrnındaki elemanları ekrana çizdiren fonksiyon
 void drawWifiView();
+void drawScreenWifiDetailView(int selectChoose);
+void drawScreenWifiFrameView();
+void drawIconWifiFieldCompanenet(const unsigned char *icon);
+void drawWifiChooseMenu(int chooseIndex);
+
+
 void drawScreenWifiDetailView();
 
 void drawBluetoothView();

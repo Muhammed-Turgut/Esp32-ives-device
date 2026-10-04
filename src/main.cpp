@@ -16,7 +16,9 @@ using namespace std;
 
 #define BTN_LEFT  34 //LEFT
 #define BTN_RIGHT 39 //Right
-#define BTN_OK 35 // ok buttonu
+#define BTN_UP  36 //Up
+#define BTN_DOWN 14 //Down
+#define BTN_OK 35 //ok buttonu
 #define BTN_BACK 13 //BACK BUTTON
 
 
@@ -29,6 +31,9 @@ Gps gps;
 
 static int screen = 0;
 const int SCREEN_COUNT = 5;
+
+static int wifiChooseIndex = 0; // wifi detay ekranında hangi menü seçeneğini seçtiğimizi gösteriyor.
+
 
 void parkSpi() {
   const uint8_t highPins[] = {SD_CS, TFT_CS, 4, 27, 32, 33};
@@ -55,7 +60,7 @@ void showScreen(std::stack<int>& s) {
         case 1:
         //Wifi özellikleri için detay sayfası listelenecek.
         // ui_wifi_detail_view();
-        drawScreenWifiDetailView();
+        drawScreenWifiDetailView(wifiChooseIndex);
         break;
 
         case 2:
@@ -83,10 +88,15 @@ void setup() {
   parkSpi();
   pinMode(TFT_LED, OUTPUT);
   digitalWrite(TFT_LED, HIGH);
+
+  // Buttonlardan veri okuma noktaları
   pinMode(BTN_LEFT, INPUT);
   pinMode(BTN_RIGHT, INPUT);
+  pinMode(BTN_UP, INPUT);
+  pinMode(BTN_DOWN, INPUT);
   pinMode(BTN_OK, INPUT);
   pinMode(BTN_BACK, INPUT);
+
   Serial.begin(115200);
   Serial2.begin(9600, SERIAL_8N1, 16, 17);
 
@@ -100,11 +110,15 @@ void loop() {
 
   static bool leftWas = false;
   static bool rightWas = false;
+  static bool upWas = false;
+  static bool downWas = false;
   static bool btnOkWas = false;
   static bool btnBackWas = false;
 
   bool left = digitalRead(BTN_LEFT);
   bool right = digitalRead(BTN_RIGHT);
+  bool btnUp = digitalRead(BTN_UP);
+  bool btnDown = digitalRead(BTN_DOWN);
   bool btnOk = digitalRead(BTN_OK);
   bool btnBack = digitalRead(BTN_BACK);
 
@@ -147,13 +161,31 @@ void loop() {
   }
 
   static unsigned long lastGpsDraw = 0;
-        if (!screenStack.empty() && screenStack.top() == 0) {
-          gps.update(); // GPS sürekli update atması için var.
+  if (!screenStack.empty() && screenStack.top() == 0) {
+          gps.update(); // GPS sürekli update atması için var. 
           if (millis() - lastGpsDraw > 1000) {
            drawScreenGPSDetailView();
            lastGpsDraw = millis();
-          }
-        }
+    }
+  }
+
+ 
+  if (!screenStack.empty() && screenStack.top() == 1) {
+
+  static unsigned long lastNav = 0;
+  
+  if (millis() - lastNav < 180) {
+    // yut, artırma
+  } else if (btnDown && !downWas) {
+    wifiChooseIndex = (wifiChooseIndex + 1) % 4;
+    lastNav = millis();
+    drawScreenWifiDetailView(wifiChooseIndex);
+  } else if (btnUp && !upWas) {
+    wifiChooseIndex = (wifiChooseIndex + 4 - 1) % 4;
+    lastNav = millis();
+    drawScreenWifiDetailView(wifiChooseIndex);
+  }
+}
 
   
 
@@ -163,6 +195,8 @@ void loop() {
   rightWas = right;
   btnOkWas = btnOk;
   btnBackWas = btnBack;
+  upWas = btnUp;
+  downWas = btnDown;
 
   delay(20);
 
