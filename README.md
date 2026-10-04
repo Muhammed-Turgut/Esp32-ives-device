@@ -6,6 +6,13 @@
 </p>
 
 
+### GPS Screen Image
+<p align="center">
+  <img src="https://github.com/Muhammed-Turgut/imageRaw/blob/main/ives-device-images/gps_detail_image.png?raw=true" width="600" height="600" />
+  <img src="https://github.com/Muhammed-Turgut/imageRaw/blob/main/ives-device-images/gps_no_fix_image.png?raw=true" width="600" height="600" />V
+</p>
+
+
 ### Güç Hattı
 
 | Bileşen | Pin | Bağlantı |
