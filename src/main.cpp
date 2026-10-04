@@ -97,8 +97,6 @@ void setup() {
 }
 
 void loop() {
-  
-  gps.update();
 
   static bool leftWas = false;
   static bool rightWas = false;
@@ -150,7 +148,7 @@ void loop() {
 
   static unsigned long lastGpsDraw = 0;
         if (!screenStack.empty() && screenStack.top() == 0) {
-          //sürekli olarak draw detail in çizilmeisi için ekledik bunu
+          gps.update(); // GPS sürekli update atması için var.
           if (millis() - lastGpsDraw > 1000) {
            drawScreenGPSDetailView();
            lastGpsDraw = millis();

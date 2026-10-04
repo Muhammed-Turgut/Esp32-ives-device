@@ -22,6 +22,7 @@ void drawScreenGPSFrameView();
 void drawScreenCompassCompanent();
 void drawCompanentNumberOfDetectedSatellites(uint32_t count);
 void drawCompanentLatituedAndLongitued(double latitude, double longitude);
+
 //wifi detay ekrnındaki elemanları ekrana çizdiren fonksiyon
 void drawWifiView();
 void drawScreenWifiDetailView();
