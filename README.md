@@ -8,9 +8,21 @@
 
 ### GPS Screen Image
 <p align="center">
-  <img src="https://github.com/Muhammed-Turgut/imageRaw/blob/main/ives-device-images/gps_detail_image.png?raw=true" width="600" height="600" />
-  <img src="https://github.com/Muhammed-Turgut/imageRaw/blob/main/ives-device-images/gps_no_fix_image.png?raw=true" width="600" height="600" />V
+  <img src="https://github.com/Muhammed-Turgut/imageRaw/blob/main/ives-device-images/gps_detail_image.png?raw=true" width="200" height="200" />
+  <img src="https://github.com/Muhammed-Turgut/imageRaw/blob/main/ives-device-images/gps_no_fix_image.png?raw=true" width="200" height="200" />
 </p>
+
+### Wifi Screen Image
+<p align="center">
+  <img src="https://github.com/Muhammed-Turgut/imageRaw/blob/main/ives-device-images/wifi_detail_scanning_image.png?raw=true" width="200" height="200" />
+  <img src="https://github.com/Muhammed-Turgut/imageRaw/blob/main/ives-device-images/wifi_detail_evil_twin_image.png?raw=true" width="200" height="200" />
+  <img src="https://github.com/Muhammed-Turgut/imageRaw/blob/main/ives-device-images/wifi_detail_deauthentication_image.png?raw=true" width="200" height="200" />
+</p>
+
+<p align="center">
+  <img src="https://github.com/Muhammed-Turgut/imageRaw/blob/main/ives-device-images/wifi_detail_packt_sniffing_image.png?raw=true" width="200" height="200" />
+</p>
+</p> 
 
 
 ### Güç Hattı
