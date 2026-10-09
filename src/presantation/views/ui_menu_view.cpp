@@ -10,6 +10,7 @@ void selecteMenuView (int screen){
       break;
 
     case 2:
+      tft.fillScreen(0x0); //burda bunu kullanma sabebimiz bluthoot ekranın sadece bir kez çizilmesi buda üstü üste piksel bime sorunu yaratıyor  bu fonksiyon sayesinde artık bluetooth çizilmeden nce ekran bir kere temizlenecek.
       drawBluetoothView();
     break;
 
