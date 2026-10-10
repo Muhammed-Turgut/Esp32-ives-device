@@ -5,6 +5,8 @@
 #include <stack>
 #include "presantation/views/ui.h"
 #include "presantation/ui_common.h"
+#include <BLEDevice.h> 
+#include "presantation/views/bluetooth/server_call_back.h"
 #include "gps.h"
 using namespace std;
 
@@ -27,6 +29,10 @@ using namespace std;
 stack<int> screenStack;  
 
 Adafruit_ST7735 tft(TFT_CS, TFT_DC, TFT_RST);
+
+static BLECharacteristic* isi = nullptr;
+static ServerCallBack info;
+
 Gps gps;
 
 static int screen = 0;
@@ -98,6 +104,25 @@ void setup() {
   pinMode(BTN_OK, INPUT);
   pinMode(BTN_BACK, INPUT);
 
+  //bluetooth ayarları
+BLEDevice::init("Merhaba ben bluetooth"); //Burası cihaza isim verme alanı.
+
+BLEServer* server = BLEDevice::createServer(); 
+server->setCallbacks(&info);
+
+BLEService* service = server->createService(BLEUUID((uint16_t)0x180F));
+isi = service->createCharacteristic(
+    BLEUUID((uint16_t)0x2A6E),
+    BLECharacteristic::PROPERTY_READ | BLECharacteristic::PROPERTY_NOTIFY);
+isi->setValue("23.5");
+service->start();
+
+BLEAdvertising* reklam = BLEDevice::getAdvertising();
+reklam->addServiceUUID(BLEUUID((uint16_t)0x180F));
+reklam->setScanResponse(true);
+
+
+
   Serial.begin(115200);
   Serial2.begin(9600, SERIAL_8N1, 16, 17);
 
@@ -124,7 +149,25 @@ void loop() {
   bool btnOk = digitalRead(BTN_OK);
   bool btnBack = digitalRead(BTN_BACK);
 
- 
+ if (btnOk && !btnOkWas) {
+  if (screenStack.empty()) {
+    screenStack.push(screen);
+    if (screen == 2) {
+      BLEDevice::startAdvertising();
+    }
+    showScreen(screenStack);
+  }
+}
+if (btnBack && !btnBackWas) {
+  if (!screenStack.empty()) {
+    if (screenStack.top() == 2) {
+      BLEDevice::stopAdvertising();
+    }
+    screenStack.pop();
+    showScreen(screenStack);
+  }
+}
+
   if(screenStack.empty()){
 
   if (left && !leftWas) {
@@ -189,6 +232,7 @@ void loop() {
 
 
 //Bluetooth ekranının yöneten alan
+
  if (!screenStack.empty() && screenStack.top() == 2) {
   if (millis() - lastNav < 180) {
     // yut, artırma

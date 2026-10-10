@@ -8,6 +8,7 @@
 
 void drawScreenBluetoothDetailView(int index){
   int bluethoothCount = 4;
+  
   drawBluetoothFramView();
 
   drawBluetoothChoosMenu(index);
@@ -71,8 +72,6 @@ void drawBluetoothChoosMenu(int chooseIndex) {
 }
 
 void drawBluetoothFramView(){
-
-
 
     tft.fillScreen(0x0);
     // rect 1
