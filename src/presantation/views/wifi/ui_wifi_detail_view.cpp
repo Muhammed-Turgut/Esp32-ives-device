@@ -51,20 +51,20 @@ void drawWifiChooseMenu(int chooseIndex) {
 
     }
 
-    drawIconWifiFieldCompanenet(icon);
+    drawIconFieldCompanenet(icon);
 
     tft.setTextColor(chooseIndex == 0 ? isActiveColor : isDeActiveColor);
     tft.setTextSize(1);
     uiPrint(12, 31,"Scanning");
     
     tft.setTextColor(chooseIndex == 1 ? isActiveColor : isDeActiveColor);
-    uiPrint(13, 47, "Evil Twin");
+    uiPrint(12, 47, "Evil Twin");
     
     tft.setTextColor(chooseIndex == 2 ? isActiveColor : isDeActiveColor);
-    uiPrint(13, 63, "Deauthentication");
+    uiPrint(12, 63, "Deauthentication");
     // string 43
     tft.setTextColor(chooseIndex == 3 ? isActiveColor : isDeActiveColor);
-    uiPrint(13, 79,"Packet Sniffing");
+    uiPrint(12, 79,"Packet Sniffing");
     // ButtonRight
     tft.drawBitmap(5, rightIconLocation, image_ButtonRight_bits, 4, 7, 0x8E09);
 
@@ -92,7 +92,7 @@ void drawScreenWifiFrameView(){
      uiPrint(6, 114,"back");
 }
 
-void drawIconWifiFieldCompanenet(const unsigned char *icon){
+void drawIconFieldCompanenet(const unsigned char *icon){
 // ekrana iconları çizen eleman
 tft.drawBitmap(90, 24, icon, 32, 32, 0x8E09);
 

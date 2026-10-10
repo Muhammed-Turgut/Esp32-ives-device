@@ -33,7 +33,7 @@ static int screen = 0;
 const int SCREEN_COUNT = 5;
 
 static int wifiChooseIndex = 0; // wifi detay ekranında hangi menü seçeneğini seçtiğimizi gösteriyor.
-
+static int BluetoothChooseIndex = 0; // bluetooth detay ekranında hangi menü seçeneğini seçtiğimizi gösteriyor.
 
 void parkSpi() {
   const uint8_t highPins[] = {SD_CS, TFT_CS, 4, 27, 32, 33};
@@ -64,8 +64,9 @@ void showScreen(std::stack<int>& s) {
         break;
 
         case 2:
-        //Bluetooth özellikleri için ekranda listeleme yapıalcak
-        //ui_bluetooth_detail_view();
+        
+        drawScreenBluetoothDetailView(BluetoothChooseIndex);
+
         break;
 
         case 3:
@@ -108,6 +109,7 @@ void setup() {
 
 void loop() {
 
+  static unsigned long lastNav = 0;
   static bool leftWas = false;
   static bool rightWas = false;
   static bool upWas = false;
@@ -170,10 +172,8 @@ void loop() {
   }
 
  
+  //Wifi ekranını yöneten alan.
   if (!screenStack.empty() && screenStack.top() == 1) {
-
-  static unsigned long lastNav = 0;
-  
   if (millis() - lastNav < 180) {
     // yut, artırma
   } else if (btnDown && !downWas) {
@@ -187,7 +187,21 @@ void loop() {
   }
 }
 
-  
+
+//Bluetooth ekranının yöneten alan
+ if (!screenStack.empty() && screenStack.top() == 2) {
+  if (millis() - lastNav < 180) {
+    // yut, artırma
+  } else if (btnDown && !downWas) {
+    BluetoothChooseIndex = (BluetoothChooseIndex + 1) % 4;
+    lastNav = millis();
+    drawScreenBluetoothDetailView(BluetoothChooseIndex);
+  } else if (btnUp && !upWas) {
+    BluetoothChooseIndex = (BluetoothChooseIndex + 4 - 1) % 4;
+    lastNav = millis();
+    drawScreenBluetoothDetailView(BluetoothChooseIndex);
+  }
+} 
 
   //Bu değişkenelr buttonlara bir kez mi basıldı hala 
   //basılımı buttonlara, bunu denetliyor.

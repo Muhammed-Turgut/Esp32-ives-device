@@ -27,17 +27,21 @@ void drawCompanentLatituedAndLongitued(double latitude, double longitude);
 void drawWifiView();
 void drawScreenWifiDetailView(int selectChoose);
 void drawScreenWifiFrameView();
-void drawIconWifiFieldCompanenet(const unsigned char *icon);
 void drawWifiChooseMenu(int chooseIndex);
-
-
 void drawScreenWifiDetailView();
 
+//Bluetooth için detay ekranındaki elemanları ekrana çizdiren fonskiyon
 void drawBluetoothView();
+void drawScreenBluetoothDetailView(int index);
+void drawBluetoothFramView();
+void drawBluetoothChoosMenu(int chooseIndex);
 
 void drawTestView();
 
 void drawSettingsView();
+
+//ortak fonksiyonlar
+void drawIconFieldCompanenet(const unsigned char *icon);
 
 
 //animations
