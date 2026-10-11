@@ -91,6 +91,24 @@ void showScreen(std::stack<int>& s) {
   }
 }
 
+void drawLoopView(std::function<void(int index)> drawView, bool lastNav, bool btnDown, bool downWas, bool btnUp, bool upWas, int stackNumber, int& indexChoose) {
+
+  //Tek noktadan ekranları çizdirimek için
+  if (!screenStack.empty() && screenStack.top() == stackNumber) {
+  if (millis() - lastNav < 180) {
+    // yut, artırma
+  } else if (btnDown && !downWas) {
+    indexChoose = (indexChoose + 1) % 4;
+    lastNav = millis();
+    drawView(indexChoose);
+  } else if (btnUp && !upWas) {
+    indexChoose = (indexChoose + 4 - 1) % 4;
+    lastNav = millis();
+    drawView(indexChoose);
+  }
+} 
+
+}
 void setup() {
   parkSpi();
   pinMode(TFT_LED, OUTPUT);
@@ -153,7 +171,7 @@ void loop() {
   if (screenStack.empty()) {
     screenStack.push(screen);
     if (screen == 2) {
-      BLEDevice::startAdvertising();
+      BLEDevice::startAdvertising(); // Bluetooth sistemini balatan katman
     }
     showScreen(screenStack);
   }
@@ -161,7 +179,7 @@ void loop() {
 if (btnBack && !btnBackWas) {
   if (!screenStack.empty()) {
     if (screenStack.top() == 2) {
-      BLEDevice::stopAdvertising();
+      BLEDevice::stopAdvertising(); //Bluetooth sistemini reklam yanni ben burdayım yayınını durduran katman
     }
     screenStack.pop();
     showScreen(screenStack);
@@ -214,38 +232,15 @@ if (btnBack && !btnBackWas) {
     }
   }
 
+
+  //oid drawLoopView(function<void(int index)> drawView,bool lastNav, bool btnDown, bool downWas, bool btnUp, bool upWas, int stackNumber, int index)
+  //Wifi ekranını yöneten alan
+  drawLoopView(static_cast<void(*)(int)>(drawScreenWifiDetailView), lastNav, btnDown, downWas, btnUp, upWas, 1, wifiChooseIndex);
+   
+  //Bluetooth ekranının yöneten alan 
+  drawLoopView(static_cast<void(*)(int)>(drawScreenBluetoothDetailView), lastNav, btnDown, downWas, btnUp, upWas, 2, BluetoothChooseIndex);
  
-  //Wifi ekranını yöneten alan.
-  if (!screenStack.empty() && screenStack.top() == 1) {
-  if (millis() - lastNav < 180) {
-    // yut, artırma
-  } else if (btnDown && !downWas) {
-    wifiChooseIndex = (wifiChooseIndex + 1) % 4;
-    lastNav = millis();
-    drawScreenWifiDetailView(wifiChooseIndex);
-  } else if (btnUp && !upWas) {
-    wifiChooseIndex = (wifiChooseIndex + 4 - 1) % 4;
-    lastNav = millis();
-    drawScreenWifiDetailView(wifiChooseIndex);
-  }
-}
 
-
-//Bluetooth ekranının yöneten alan
-
- if (!screenStack.empty() && screenStack.top() == 2) {
-  if (millis() - lastNav < 180) {
-    // yut, artırma
-  } else if (btnDown && !downWas) {
-    BluetoothChooseIndex = (BluetoothChooseIndex + 1) % 4;
-    lastNav = millis();
-    drawScreenBluetoothDetailView(BluetoothChooseIndex);
-  } else if (btnUp && !upWas) {
-    BluetoothChooseIndex = (BluetoothChooseIndex + 4 - 1) % 4;
-    lastNav = millis();
-    drawScreenBluetoothDetailView(BluetoothChooseIndex);
-  }
-} 
 
   //Bu değişkenelr buttonlara bir kez mi basıldı hala 
   //basılımı buttonlara, bunu denetliyor.

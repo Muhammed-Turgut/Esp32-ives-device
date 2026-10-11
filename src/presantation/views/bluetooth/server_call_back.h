@@ -4,6 +4,7 @@
 #include <BLEDevice.h>
 
 class ServerCallBack : public BLEServerCallbacks {
+  // bu Bluethooth serivisindne gelen cevapları tutuğumuz sınıs.
   void onConnect(BLEServer* s) override {}
   void onDisconnect(BLEServer* s) override {
     BLEDevice::startAdvertising();
