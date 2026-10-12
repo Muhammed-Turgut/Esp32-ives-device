@@ -40,6 +40,7 @@ const int SCREEN_COUNT = 5;
 
 static int wifiChooseIndex = 0; // wifi detay ekranında hangi menü seçeneğini seçtiğimizi gösteriyor.
 static int BluetoothChooseIndex = 0; // bluetooth detay ekranında hangi menü seçeneğini seçtiğimizi gösteriyor.
+static int TestChooseIndex = 0; // Test detay ekranında hangi menü seçeneğini seçtiğimizi gösteriyor.
 
 void parkSpi() {
   const uint8_t highPins[] = {SD_CS, TFT_CS, 4, 27, 32, 33};
@@ -76,8 +77,7 @@ void showScreen(std::stack<int>& s) {
         break;
 
         case 3:
-        //test özellikleri için ekrnada listeleme yapılacak
-        //ui_tests_detail_view();
+        drawTestScreenDetailView(TestChooseIndex);
         break;
 
         case 4:
@@ -90,6 +90,7 @@ void showScreen(std::stack<int>& s) {
 
   }
 }
+
 
 void drawLoopView(std::function<void(int index)> drawView, bool lastNav, bool btnDown, bool downWas, bool btnUp, bool upWas, int stackNumber, int& indexChoose) {
 
@@ -107,8 +108,10 @@ void drawLoopView(std::function<void(int index)> drawView, bool lastNav, bool bt
     drawView(indexChoose);
   }
 } 
-
 }
+
+
+
 void setup() {
   parkSpi();
   pinMode(TFT_LED, OUTPUT);
@@ -123,23 +126,21 @@ void setup() {
   pinMode(BTN_BACK, INPUT);
 
   //bluetooth ayarları
-BLEDevice::init("Merhaba ben bluetooth"); //Burası cihaza isim verme alanı.
+  BLEDevice::init("Merhaba ben bluetooth"); //Burası cihaza isim verme alanı.
 
-BLEServer* server = BLEDevice::createServer(); 
-server->setCallbacks(&info);
+  BLEServer* server = BLEDevice::createServer(); 
+  server->setCallbacks(&info);
 
-BLEService* service = server->createService(BLEUUID((uint16_t)0x180F));
-isi = service->createCharacteristic(
-    BLEUUID((uint16_t)0x2A6E),
-    BLECharacteristic::PROPERTY_READ | BLECharacteristic::PROPERTY_NOTIFY);
-isi->setValue("23.5");
-service->start();
+  BLEService* service = server->createService(BLEUUID((uint16_t)0x180F));
+  isi = service->createCharacteristic(
+  BLEUUID((uint16_t)0x2A6E),
+  BLECharacteristic::PROPERTY_READ | BLECharacteristic::PROPERTY_NOTIFY);
+  isi->setValue("23.5");
+  service->start();
 
-BLEAdvertising* reklam = BLEDevice::getAdvertising();
-reklam->addServiceUUID(BLEUUID((uint16_t)0x180F));
-reklam->setScanResponse(true);
-
-
+  BLEAdvertising* reklam = BLEDevice::getAdvertising();
+  reklam->addServiceUUID(BLEUUID((uint16_t)0x180F));
+  reklam->setScanResponse(true);
 
   Serial.begin(115200);
   Serial2.begin(9600, SERIAL_8N1, 16, 17);
@@ -147,7 +148,8 @@ reklam->setScanResponse(true);
   tft.initR(INITR_144GREENTAB);
   tft.setRotation(0);
 
-  showScreen(screenStack);
+showScreen(screenStack);
+
 }
 
 void loop() {
@@ -176,6 +178,7 @@ void loop() {
     showScreen(screenStack);
   }
 }
+
 if (btnBack && !btnBackWas) {
   if (!screenStack.empty()) {
     if (screenStack.top() == 2) {
@@ -201,6 +204,8 @@ if (btnBack && !btnBackWas) {
   }
     selecteMenuAnimations(screen);
   }
+
+
 
   if(btnOk && !btnOkWas){
     //Bu if bloğu screen stack boş ise ekelme yapılsın boş 
@@ -239,8 +244,9 @@ if (btnBack && !btnBackWas) {
    
   //Bluetooth ekranının yöneten alan 
   drawLoopView(static_cast<void(*)(int)>(drawScreenBluetoothDetailView), lastNav, btnDown, downWas, btnUp, upWas, 2, BluetoothChooseIndex);
- 
 
+  drawLoopView(static_cast<void(*)(int)>(drawTestScreenDetailView), lastNav, btnDown, downWas, btnUp, upWas, 3, TestChooseIndex);
+ 
 
   //Bu değişkenelr buttonlara bir kez mi basıldı hala 
   //basılımı buttonlara, bunu denetliyor.

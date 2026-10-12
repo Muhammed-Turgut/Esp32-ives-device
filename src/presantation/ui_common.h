@@ -35,8 +35,14 @@ void drawBluetoothView();
 void drawScreenBluetoothDetailView(int index);
 void drawBluetoothFramView();
 void drawBluetoothChoosMenu(int chooseIndex);
+void drawBlueotoothMenuItem(int& chooseIndex, int& rightIconLocation);
 
+//BUrası test ekranının companentlerinin bulunduğu alan.
 void drawTestView();
+void drawTestScreenDetailView(int index);
+void drawTestChoosMenu(int &chooseIndex);
+void drawTestDetailFrameView();
+void drawTestMenuItem(int chooseIndex, int rightIconLocation);
 
 void drawSettingsView();
 
