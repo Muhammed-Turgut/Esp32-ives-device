@@ -6,7 +6,12 @@
 extern Gps gps;
 extern Adafruit_ST7735 tft;
 
-inline void uiPrint(int16_t x, int16_t y, const char* s) {
+extern uint16_t isActiveColor;
+extern uint16_t isDeActiveColor;
+
+inline void uiPrint(int16_t x, int16_t y, const char* s, uint16_t color = 0x8e09, int size = 1) {
+  tft.setTextColor(color);
+  tft.setTextSize(size);
   tft.setCursor(x, y);
   tft.print(s);
 }

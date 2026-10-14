@@ -49,23 +49,10 @@ void drawBluetoothChoosMenu(int chooseIndex) {
 
 
 void drawBlueotoothMenuItem(int& chooseIndex, int& rightIconLocation) {
-
-  uint16_t isActiveColor = 0x8E09;
-  uint16_t isDeActiveColor = 0x5AEC;
-  
-  tft.setTextColor(chooseIndex == 0 ? isActiveColor : isDeActiveColor);
-    tft.setTextSize(1);
-    uiPrint(12, 31,"BLE Spam");
-    
-    tft.setTextColor(chooseIndex == 1 ? isActiveColor : isDeActiveColor);
-    uiPrint(12, 47, "HID");
-    
-    tft.setTextColor(chooseIndex == 2 ? isActiveColor : isDeActiveColor);
-    uiPrint(12, 63, "Bluetooth Sniffing");
-    // string 43
-    tft.setTextColor(chooseIndex == 3 ? isActiveColor : isDeActiveColor);
-    uiPrint(12, 79,"Beacon Tracking");
-    // ButtonRight
+    uiPrint(12, 31,"BLE Spam",chooseIndex == 0 ? isActiveColor : isDeActiveColor);
+    uiPrint(12, 47, "HID",chooseIndex == 1 ? isActiveColor : isDeActiveColor);
+    uiPrint(12, 63, "Bluetooth Sniffing",chooseIndex == 2 ? isActiveColor : isDeActiveColor);
+    uiPrint(12, 79,"Beacon Tracking",chooseIndex == 3 ? isActiveColor : isDeActiveColor);
     tft.drawBitmap(5, rightIconLocation, image_ButtonRight_bits, 4, 7, 0x8E09);
 }
 
@@ -76,17 +63,11 @@ void drawBluetoothFramView(){
     tft.drawRect(0, 0, 128, 128, 0x8E09);
     // rect 18
     tft.drawRect(0, 0, 128, 22, 0x8E09);
-    // string 19
-    tft.setTextColor(0x8E09);
-    tft.setTextSize(1);
-    uiPrint(24, 8,"Bluethooth");
-    // string 22
-    uiPrint(7, 115,"back");
-    // rect 21
+    
+    uiPrint(24, 8,"Bluethooth",0x8E09);
+    uiPrint(7, 115,"back",0x8E09);
     tft.fillRoundRect(77, 112, 47, 12, 5, 0x8E09);
-    // string 22
-    tft.setTextColor(0x0);
-    uiPrint( 84, 114,"Select");
+    uiPrint( 84, 114,"Select",0x0);
     // bluetooth
     tft.drawBitmap(6, 3, image_bluetooth_mini_bits, 14, 16, 0x8E09);
 }

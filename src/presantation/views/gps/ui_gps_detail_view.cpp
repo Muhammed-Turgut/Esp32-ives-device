@@ -6,7 +6,6 @@
 
 
 
-
 void drawScreenGPSDetailView() {
 
    drawScreenGPSFrameView();
@@ -14,14 +13,12 @@ void drawScreenGPSDetailView() {
 
     if (!gps.hasFix())
     {
-      tft.setTextColor(0xC0E5);
-      uiPrint(44, 52,"no fix");
+      uiPrint(44, 52,"no fix",0xC0E5);
     // string 25
-      tft.setTextColor(0x5AEC);
-      uiPrint(24, 62, "Please wait...");
+
+      uiPrint(24, 62, "Please wait...",0x5AEC);
     // string 22
     }
-
     else {
         drawScreenCompassCompanent();
         drawScreenNavigasyonCursorCompanenet((float)gps.courseDeg());
@@ -32,28 +29,20 @@ void drawScreenGPSDetailView() {
 
 void drawCompanentNumberOfDetectedSatellites(uint32_t count) {
   tft.drawBitmap(92, 5, image_satellite_icon_bits, 13, 13, 0xFFFF);
-
   char buf[8];
   snprintf(buf, sizeof(buf), ":%u", (unsigned)count);
-
-  tft.setTextColor(0xFFFF);
-  tft.setTextSize(1);
-  uiPrint(110, 8, buf);
+  uiPrint(110, 8, buf,0xFFFF);
 }
 
 void drawScreenGPSFrameView(){
-     tft.fillScreen(0x0);
+    tft.fillScreen(0x0);
     tft.drawRect(0, 0, 128, 128, 0x8E09);
     tft.drawRect(0, 0, 128, 22, 0x8E09);
-    tft.setTextColor(0x8E09);
-    tft.setTextSize(1);
-    uiPrint(27, 8, "GPS");
+    uiPrint(27, 8, "GPS",0x8E09);
     tft.fillRoundRect(65, 111, 59, 12, 5, 0x8E09);
-    tft.setTextColor(0x0);
-    uiPrint(72, 113,"look map");
+    uiPrint(72, 113,"look map",0x0);
     // string 22
-    tft.setTextColor(0x8E09);
-    uiPrint(6, 114,"back");
+    uiPrint(6, 114,"back",0x8E09);
     // map_navigation_pin_location_2__Streamline_Pixel
     tft.drawBitmap(5, 3, image_map_navigation_pin_location_bits, 16, 16, 0x8E09);
 }
@@ -64,14 +53,11 @@ void drawCompanentLatituedAndLongitued(double latitude, double longitude) {
   dtostrf(latitude, 0, 6, lat);
   dtostrf(longitude, 0, 6, lon);
 
-  tft.setTextColor(0x8E09);
-  tft.setTextSize(1);
-  uiPrint(6, 29, "latitude:");
-  uiPrint(6, 41, "longitude:");
+  uiPrint(6, 29, "latitude:",0x8E09);
+  uiPrint(6, 41, "longitude:",0x8E09);
 
-  tft.setTextColor(0xFFFF);
-  uiPrint(61, 29, lat);
-  uiPrint(66, 41, lon);
+  uiPrint(61, 29, lat, 0xFFFF);
+  uiPrint(66, 41, lon, 0xFFFF);
 }
 
 void drawScreenCompassCompanent() {
@@ -87,15 +73,14 @@ void drawScreenCompassCompanent() {
     // rect 30
     tft.fillRect(94, 60, 9, 11, 0x0);
     // string 26
-    tft.setTextColor(0xFFFF);
-    tft.setTextSize(1);
-    uiPrint( 96, 62,"N");
+   
+    uiPrint( 96, 62,"N",0xFFFF);
     // string 26
-    uiPrint( 96, 100,"S");
+    uiPrint( 96, 100,"S",0xFFFF);
     // string 26
-    uiPrint( 116, 80,"E");
+    uiPrint( 116, 80,"E",0xFFFF);
     // string 26
-    uiPrint(77, 80,"W");
+    uiPrint(77, 80,"W",0xFFFF);
 }
 
 void drawScreenNavigasyonCursorCompanenet(float courseDeg) {

@@ -35,6 +35,9 @@ static ServerCallBack info;
 
 Gps gps;
 
+uint16_t isActiveColor = 0x8E09;
+uint16_t isDeActiveColor = 0x5AEC;
+
 static int screen = 0;
 const int SCREEN_COUNT = 5;
 
