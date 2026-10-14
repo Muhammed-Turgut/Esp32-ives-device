@@ -8,6 +8,7 @@
 #include <BLEDevice.h> 
 #include "presantation/views/bluetooth/server_call_back.h"
 #include "gps.h"
+#include "core/buttons.h"
 using namespace std;
 
 #define TFT_CS  15
@@ -95,17 +96,17 @@ void showScreen(std::stack<int>& s) {
 }
 
 
-void drawLoopView(std::function<void(int index)> drawView, bool lastNav, bool btnDown, bool downWas, bool btnUp, bool upWas, int stackNumber, int& indexChoose) {
+void drawLoopView(std::function<void(int index)> drawView, bool lastNav, int stackNumber, int& indexChoose) {
 
   //Tek noktadan ekranları çizdirimek için
   if (!screenStack.empty() && screenStack.top() == stackNumber) {
   if (millis() - lastNav < 180) {
     // yut, artırma
-  } else if (btnDown && !downWas) {
+  } else if (buttons.downPressed) {
     indexChoose = (indexChoose + 1) % 4;
     lastNav = millis();
     drawView(indexChoose);
-  } else if (btnUp && !upWas) {
+  } else if (buttons.upPressed) {
     indexChoose = (indexChoose + 4 - 1) % 4;
     lastNav = millis();
     drawView(indexChoose);
@@ -120,13 +121,7 @@ void setup() {
   pinMode(TFT_LED, OUTPUT);
   digitalWrite(TFT_LED, HIGH);
 
-  // Buttonlardan veri okuma noktaları
-  pinMode(BTN_LEFT, INPUT);
-  pinMode(BTN_RIGHT, INPUT);
-  pinMode(BTN_UP, INPUT);
-  pinMode(BTN_DOWN, INPUT);
-  pinMode(BTN_OK, INPUT);
-  pinMode(BTN_BACK, INPUT);
+  buttonsBegin();
 
   //bluetooth ayarları
   BLEDevice::init("Merhaba ben bluetooth"); //Burası cihaza isim verme alanı.
@@ -156,23 +151,12 @@ showScreen(screenStack);
 }
 
 void loop() {
-
+  buttonsUpdate();
   static unsigned long lastNav = 0;
-  static bool leftWas = false;
-  static bool rightWas = false;
-  static bool upWas = false;
-  static bool downWas = false;
-  static bool btnOkWas = false;
-  static bool btnBackWas = false;
+  
 
-  bool left = digitalRead(BTN_LEFT);
-  bool right = digitalRead(BTN_RIGHT);
-  bool btnUp = digitalRead(BTN_UP);
-  bool btnDown = digitalRead(BTN_DOWN);
-  bool btnOk = digitalRead(BTN_OK);
-  bool btnBack = digitalRead(BTN_BACK);
 
- if (btnOk && !btnOkWas) {
+ if (buttons.okPressed) {
   if (screenStack.empty()) {
     screenStack.push(screen);
     if (screen == 2) {
@@ -182,7 +166,7 @@ void loop() {
   }
 }
 
-if (btnBack && !btnBackWas) {
+if (buttons.backPressed) {
   if (!screenStack.empty()) {
     if (screenStack.top() == 2) {
       BLEDevice::stopAdvertising(); //Bluetooth sistemini reklam yanni ben burdayım yayınını durduran katman
@@ -194,13 +178,13 @@ if (btnBack && !btnBackWas) {
 
   if(screenStack.empty()){
 
-  if (left && !leftWas) {
+  if (buttons.leftPressed) {
     screen = (screen + SCREEN_COUNT - 1) % SCREEN_COUNT;
     selecteMenuView(screen);
     tft.fillRect(31, 32, 69, 66, 0x0);
   }
 
-  if (right && !rightWas) {
+  if (buttons.rightPressed) {
     screen = (screen + 1) % SCREEN_COUNT;
     selecteMenuView(screen);
     tft.fillRect(31, 32, 69, 66, 0x0);
@@ -210,7 +194,7 @@ if (btnBack && !btnBackWas) {
 
 
 
-  if(btnOk && !btnOkWas){
+  if(buttons.okPressed){
     //Bu if bloğu screen stack boş ise ekelme yapılsın boş 
     //değilse ekleme yepılmasına gerek yoktur
 
@@ -222,7 +206,7 @@ if (btnBack && !btnBackWas) {
 
   }
 
-  if(btnBack && !btnBackWas){
+  if(buttons.backPressed){
 
     if(!screenStack.empty()){
       screenStack.pop();
@@ -243,22 +227,12 @@ if (btnBack && !btnBackWas) {
 
   //oid drawLoopView(function<void(int index)> drawView,bool lastNav, bool btnDown, bool downWas, bool btnUp, bool upWas, int stackNumber, int index)
   //Wifi ekranını yöneten alan
-  drawLoopView(static_cast<void(*)(int)>(drawScreenWifiDetailView), lastNav, btnDown, downWas, btnUp, upWas, 1, wifiChooseIndex);
+  drawLoopView(static_cast<void(*)(int)>(drawScreenWifiDetailView), lastNav, 1, wifiChooseIndex);
    
   //Bluetooth ekranının yöneten alan 
-  drawLoopView(static_cast<void(*)(int)>(drawScreenBluetoothDetailView), lastNav, btnDown, downWas, btnUp, upWas, 2, BluetoothChooseIndex);
+  drawLoopView(static_cast<void(*)(int)>(drawScreenBluetoothDetailView), lastNav,2, BluetoothChooseIndex);
 
-  drawLoopView(static_cast<void(*)(int)>(drawTestScreenDetailView), lastNav, btnDown, downWas, btnUp, upWas, 3, TestChooseIndex);
- 
-
-  //Bu değişkenelr buttonlara bir kez mi basıldı hala 
-  //basılımı buttonlara, bunu denetliyor.
-  leftWas = left;
-  rightWas = right;
-  btnOkWas = btnOk;
-  btnBackWas = btnBack;
-  upWas = btnUp;
-  downWas = btnDown;
+  drawLoopView(static_cast<void(*)(int)>(drawTestScreenDetailView), lastNav, 3, TestChooseIndex);
 
   delay(20);
 
