@@ -4,16 +4,21 @@
 #include "assets/images/wifi_packet_sniffing_icon_bits.h"
 #include "assets/images/wifi_scanning_icon_bits.h"
 #include "assets/images/image_ButtonRight_bits.h"
+#include <stack>
+#include "core/buttons.h"
 #include "presantation/ui_common.h"
 
 void drawScreenWifiDetailView(int selectChoose) {
+    if(selectChoose ==-1){
+        selectChoose = 0;
+    }
     drawScreenWifiFrameView();
     drawWifiChooseMenu(selectChoose);
 }
 
 void drawWifiChooseMenu(int chooseIndex) {
 
-    int rightIconLocation;
+    int rightIconLocation = 31;
     const unsigned char* icon;
     
     switch (chooseIndex)
@@ -49,7 +54,6 @@ void drawWifiChooseMenu(int chooseIndex) {
     uiPrint(12, 31,"Scanning",chooseIndex == 0 ? isActiveColor : isDeActiveColor);
     uiPrint(12, 47, "Evil Twin",chooseIndex == 1 ? isActiveColor : isDeActiveColor);
     uiPrint(12, 63, "Deauthentication",chooseIndex == 2 ? isActiveColor : isDeActiveColor);
-
     uiPrint(12, 79,"Packet Sniffing",chooseIndex == 3 ? isActiveColor : isDeActiveColor);
     // ButtonRight
     tft.drawBitmap(5, rightIconLocation, image_ButtonRight_bits, 4, 7, 0x8E09);
@@ -83,3 +87,24 @@ tft.drawBitmap(90, 24, icon, 32, 32, 0x8E09);
 
 }
 
+void drawWifiScanningView(){
+
+tft.fillScreen(0x0);
+uiPrint( 27, 8,"Wifi Scanning",0x8E09);
+}
+
+void drawWifiEvilTwinView() {
+    tft.fillScreen(0x0);
+    uiPrint( 27, 8,"Evil Twin",0x8E09);
+}
+
+void drawWifiDeauthenticationView() {
+    tft.fillScreen(0x0);
+    uiPrint( 27, 8,"Deauthentication",0x8E09);
+}
+
+
+void drawWifiPacketSniffingView() {
+    tft.fillScreen(0x0);
+    uiPrint( 27, 8,"Packet Sniffing",0x8E09);
+}

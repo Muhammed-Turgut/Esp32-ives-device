@@ -34,6 +34,10 @@ void drawScreenWifiDetailView(int selectChoose);
 void drawScreenWifiFrameView();
 void drawWifiChooseMenu(int chooseIndex);
 void drawScreenWifiDetailView();
+void drawWifiScanningView();
+void drawWifiEvilTwinView();
+void drawWifiDeauthenticationView();
+void drawWifiPacketSniffingView();
 
 //Bluetooth için detay ekranındaki elemanları ekrana çizdiren fonskiyon
 void drawBluetoothView();

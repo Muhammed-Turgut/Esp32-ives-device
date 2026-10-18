@@ -6,14 +6,11 @@
 void drawSettingsView() {
   tft.fillScreen(0x0);
   tft.drawRect(1, 0, 127, 128, 0x8E09);
-  tft.setTextColor(0xFFFF);
-  tft.setTextSize(1);
-  uiPrint(44, 111, "Settings");
+  uiPrint(44, 111, "Settings",0xFFFF);
   tft.drawBitmap(16, 112, image_ButtonLeft_bits, 4, 7, 0xFFFF);
   tft.drawBitmap(112, 112, image_ButtonRight_bits, 4, 7, 0xFFFF);
   tft.fillRect(1, 0, 128, 16, 0x8E09);
-  tft.setTextColor(0x0);
-  uiPrint(5, 5, "ESP32 ives Device");
+  uiPrint(5, 5, "ESP32 ives Device",0x0);
   settings_64_64_28f_frame = -1;
   tickSettingsAnim();
 }

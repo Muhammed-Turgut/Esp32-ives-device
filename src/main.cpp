@@ -42,7 +42,7 @@ uint16_t isDeActiveColor = 0x5AEC;
 static int screen = 0;
 const int SCREEN_COUNT = 5;
 
-static int wifiChooseIndex = 0; // wifi detay ekranında hangi menü seçeneğini seçtiğimizi gösteriyor.
+static int wifiChooseIndex = -1; // wifi detay ekranında hangi menü seçeneğini seçtiğimizi gösteriyor.
 static int BluetoothChooseIndex = 0; // bluetooth detay ekranında hangi menü seçeneğini seçtiğimizi gösteriyor.
 static int TestChooseIndex = 0; // Test detay ekranında hangi menü seçeneğini seçtiğimizi gösteriyor.
 
@@ -171,6 +171,7 @@ if (buttons.backPressed) {
     if (screenStack.top() == 2) {
       BLEDevice::stopAdvertising(); //Bluetooth sistemini reklam yanni ben burdayım yayınını durduran katman
     }
+    wifiChooseIndex =-1;
     screenStack.pop();
     showScreen(screenStack);
   }
@@ -194,26 +195,45 @@ if (buttons.backPressed) {
 
 
 
-  if(buttons.okPressed){
-    //Bu if bloğu screen stack boş ise ekelme yapılsın boş 
-    //değilse ekleme yepılmasına gerek yoktur
+  if (buttons.okPressed) {
+  buttons.okPressed = false;
 
-    if (screenStack.empty())
-    {
-     screenStack.push(screen);
+  if (screenStack.empty()) {
+    screenStack.push(screen);
+    if (screen == 2) BLEDevice::startAdvertising();
     showScreen(screenStack);
-    }
-
+    return;
   }
 
-  if(buttons.backPressed){
+  switch (screenStack.top()) {
+    case 1: // WiFi menüsü
+      switch (wifiChooseIndex) {
+        case 0: screenStack.push(11); drawWifiScanningView(); break;
+        case 1: screenStack.push(12); drawWifiEvilTwinView(); break;
+        case 2: screenStack.push(12); drawWifiDeauthenticationView(); break;
+        case 3: screenStack.push(12); drawWifiPacketSniffingView(); break;
+      }
+      break;
 
-    if(!screenStack.empty()){
-      screenStack.pop();
-      showScreen(screenStack);
-    }
-    
+    case 2: // Bluetooth menüsü
+      switch (BluetoothChooseIndex) {
+        case 0: /* BLE Spam */ break;
+        case 1: /* HID */ break;
+        case 2: /* Sniffing */ break;
+        case 3: /* Beacon */ break;
+      }
+      break;
+
+    case 3: // Test menüsü
+      switch (TestChooseIndex) {
+        case 0: /* RF-1 */ break;
+        case 1: /* RF-2 */ break;
+        case 2: /* GPS Test */ break;
+        case 3: /* SD Test */ break;
+      }
+      break;
   }
+}
 
   static unsigned long lastGpsDraw = 0;
   if (!screenStack.empty() && screenStack.top() == 0) {
