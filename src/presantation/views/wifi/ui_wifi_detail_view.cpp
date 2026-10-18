@@ -7,6 +7,8 @@
 #include "assets/images/image_ButtonLeft_bits.h"
 #include "assets/images/image_ButtonRight_bits.h"
 #include "presantation/ui_common.h"
+#include <WiFi.h>
+#include "core/buttons.h"
 
 void drawScreenWifiDetailView(int selectChoose) {
     
@@ -61,7 +63,21 @@ void drawWifiChooseMenu(int chooseIndex) {
 
 }
 
+static int wifiIndex = 0;
+
 void drawWifiScanningView(){
+
+    if(buttons.leftPressed){
+        Serial.println("Left Tıklması");
+       wifiIndex = (wifiIndex + wifiRadio.count()  - 1) % wifiRadio.count();
+    }
+    if (buttons.rightPressed)
+    {
+      Serial.println("Right Tıklması");
+      wifiIndex = (wifiIndex + 1) % wifiRadio.count() ;
+    }
+    
+
   tft.fillScreen(0);
   // Dikdörtgen
   tft.drawRect(0, 0, 128, 128, 0x8e09);
@@ -71,14 +87,24 @@ void drawWifiScanningView(){
   uiPrint(86,114,"Start",0x0000);
   uiPrint(7,114,"Back",0x8e09);
   tft.drawRect(0, 0, 128, 22, 0x8e09);
-uiPrint(7,7,"Wifi Scanning",0x8e09);
+  uiPrint(7,7,"Wifi Scanning",0x8e09);
+
   
   if (wifiRadio.scanDone()) {
-    char buf[16];
-    snprintf(buf, sizeof(buf), "%d", wifiRadio.count());
 
-    char ssid[33];
-    snprintf(ssid, sizeof(ssid), "%s", WiFi.SSID().c_str());
+    char buf[16], ssid[33], bssid[18], channel[8], rssi[16], securtyProtocol[16];
+
+    snprintf(buf, sizeof(buf), "%d", wifiRadio.count());
+    snprintf(ssid, sizeof(ssid), "%s", wifiRadio.ssid(wifiIndex));
+   snprintf(bssid, sizeof(bssid), "%s", wifiRadio.bssid(wifiIndex).c_str());
+    snprintf(channel, sizeof(channel),"%d",wifiRadio.channel(wifiIndex));
+    snprintf(rssi, sizeof(rssi), "%d",wifiRadio.rssi(wifiIndex));
+   // snprintf(securtyProtocol, sizeof(securtyProtocol), "%S",wifiRadio.securityProtocol(wifiIndex));
+    
+
+   Serial.println(bssid);
+   Serial.println(wifiIndex);
+
 
     uiPrint(110,7, buf,0xffff); //ortamdaki ağ sayısı
 
@@ -86,17 +112,17 @@ uiPrint(7,7,"Wifi Scanning",0x8e09);
     uiPrint(34,25,ssid,0x7bef);
     
     uiPrint(4,36,"bssid:",0xf800);
-    uiPrint(4,47,"14:CF:92:4A:8B:1C",0x7bef);
+    uiPrint(4,47,bssid,0x7bef);
     
     uiPrint(4,56,"channel:",0xf800);
-    uiPrint(52,56,"6",0x7bef);
+    uiPrint(52,56,channel,0x7bef);
 
     uiPrint(4,68,"rssi:",0xf800);
-    uiPrint(34,68,"-68 dBm",0xfc00);
+    uiPrint(34,68,rssi,0xfc00);
     
     
     uiPrint(4,79,"security:",0xf800);
-    uiPrint(58,79,"WPA2-PSK",0x7bef);
+    uiPrint(58, 79, wifiRadio.securityProtocol(wifiIndex), 0x7bef);
     
   }
   else{

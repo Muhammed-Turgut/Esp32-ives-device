@@ -181,13 +181,13 @@ if (buttons.backPressed) {
 
   if(screenStack.empty()){
 
-  if (buttons.leftPressed) {
+  if (buttons.leftPressed && screenStack.empty()) {
     screen = (screen + SCREEN_COUNT - 1) % SCREEN_COUNT;
     selecteMenuView(screen);
     tft.fillRect(31, 32, 69, 66, 0x0);
   }
 
-  if (buttons.rightPressed) {
+  if (buttons.rightPressed && screenStack.empty()) {
     screen = (screen + 1) % SCREEN_COUNT;
     selecteMenuView(screen);
     tft.fillRect(31, 32, 69, 66, 0x0);
@@ -209,18 +209,15 @@ if (buttons.backPressed) {
 
   switch (screenStack.top()) {
     case 1: // WiFi menüsü
+
       switch (wifiChooseIndex) {
         case 0: screenStack.push(11); wifiRadio.startScan(); drawWifiScanningView(); break;
         case 1: screenStack.push(12); drawWifiEvilTwinView(); break;
         case 2: screenStack.push(13); drawWifiDeauthenticationView(); break;
         case 3: screenStack.push(14); drawWifiPacketSniffingView(); break;
       }
-      break;
 
-    case 11:
-      wifiRadio.startScan();
-      drawWifiScanningView();
-      break;
+    break;
 
     case 2: // Bluetooth menüsü
       switch (BluetoothChooseIndex) {
@@ -252,10 +249,10 @@ if (buttons.backPressed) {
   }
 
   if (!screenStack.empty() && screenStack.top() == 11) {
-  if (millis() - lastWifiDraw > 500) {
-    drawWifiScanningView();
-    lastWifiDraw = millis();
-  }
+  if (buttons.leftPressed || buttons.rightPressed || millis() - lastWifiDraw > 500) {
+  drawWifiScanningView();
+  lastWifiDraw = millis();
+}
 }
 
 
