@@ -4,15 +4,16 @@
 #include "assets/images/wifi_packet_sniffing_icon_bits.h"
 #include "assets/images/wifi_scanning_icon_bits.h"
 #include "assets/images/image_ButtonRight_bits.h"
-#include <stack>
-#include "core/buttons.h"
+#include "assets/images/image_ButtonLeft_bits.h"
+#include "assets/images/image_ButtonRight_bits.h"
 #include "presantation/ui_common.h"
 
 void drawScreenWifiDetailView(int selectChoose) {
+    
     if(selectChoose ==-1){
         selectChoose = 0;
     }
-    drawScreenWifiFrameView();
+    drawScreenFrameView("Wifi", image_wifi_bits);
     drawWifiChooseMenu(selectChoose);
 }
 
@@ -60,37 +61,60 @@ void drawWifiChooseMenu(int chooseIndex) {
 
 }
 
-void drawScreenWifiFrameView(){
-   tft.fillScreen(0x0);
-    // rect 1
-     tft.drawRect(0, 0, 128, 128, 0x8E09);
-    // rect 18
-     tft.drawRect(0, 0, 128, 22, 0x8E09);
-    
-     // string 19
-     uiPrint( 27, 8,"Wifi",0x8E09);
-    // wifi
-     tft.drawBitmap(4, 3, image_wifi_bits, 19, 16, 0x8E09);
-     // rect 21
-     tft.fillRoundRect(82, 111, 42, 12, 5, 0x8E09);
-    
-     // string 22
-     uiPrint( 86, 113,"select",0x0);
-    
-     // string 22
-     uiPrint(6, 114,"back",0x8E09);
-}
-
-void drawIconFieldCompanenet(const unsigned char *icon){
-// ekrana iconları çizen eleman
-tft.drawBitmap(90, 24, icon, 32, 32, 0x8E09);
-
-}
-
 void drawWifiScanningView(){
+  tft.fillScreen(0);
+  // Dikdörtgen
+  tft.drawRect(0, 0, 128, 128, 0x8e09);
+  // Dikdörtgen
+  tft.fillRoundRect(77, 112, 47, 12, 5, 0x8e09);
+  tft.drawRoundRect(77, 112, 47, 12, 5, 0x8e09);
+  uiPrint(86,114,"Start",0x0000);
+  uiPrint(7,114,"Back",0x8e09);
+  tft.drawRect(0, 0, 128, 22, 0x8e09);
+uiPrint(7,7,"Wifi Scanning",0x8e09);
+  
+  if (wifiRadio.scanDone()) {
+    char buf[16];
+    snprintf(buf, sizeof(buf), "%d", wifiRadio.count());
 
-tft.fillScreen(0x0);
-uiPrint( 27, 8,"Wifi Scanning",0x8E09);
+    char ssid[33];
+    snprintf(ssid, sizeof(ssid), "%s", WiFi.SSID().c_str());
+
+    uiPrint(110,7, buf,0xffff); //ortamdaki ağ sayısı
+
+    uiPrint(4,25,"ssid:",0xf800);
+    uiPrint(34,25,ssid,0x7bef);
+    
+    uiPrint(4,36,"bssid:",0xf800);
+    uiPrint(4,47,"14:CF:92:4A:8B:1C",0x7bef);
+    
+    uiPrint(4,56,"channel:",0xf800);
+    uiPrint(52,56,"6",0x7bef);
+
+    uiPrint(4,68,"rssi:",0xf800);
+    uiPrint(34,68,"-68 dBm",0xfc00);
+    
+    
+    uiPrint(4,79,"security:",0xf800);
+    uiPrint(58,79,"WPA2-PSK",0x7bef);
+    
+  }
+  else{
+  tft.fillScreen(0);
+
+  uiPrint(34,53,"no network",0xf800);
+  // Metin
+ 
+  uiPrint(28,64,"searching...",0x7bef);
+
+
+  }
+  
+
+  // Angle right
+  tft.drawBitmap(16, 100, image_ButtonLeft_bits, 4, 7, 0xFFFF);
+  tft.drawBitmap(112, 100, image_ButtonRight_bits, 4, 7, 0xFFFF);
+
 }
 
 void drawWifiEvilTwinView() {

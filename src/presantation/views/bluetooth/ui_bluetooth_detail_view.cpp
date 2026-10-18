@@ -7,7 +7,7 @@
 #include "ui_common.h"
 
 void drawScreenBluetoothDetailView(int index){
-  drawBluetoothFramView();
+  drawScreenFrameView("Bluethooth", image_bluetooth_mini_bits);
   drawBluetoothChoosMenu(index);
 }
 
@@ -55,20 +55,3 @@ void drawBlueotoothMenuItem(int& chooseIndex, int& rightIconLocation) {
     uiPrint(12, 79,"Beacon Tracking",chooseIndex == 3 ? isActiveColor : isDeActiveColor);
     tft.drawBitmap(5, rightIconLocation, image_ButtonRight_bits, 4, 7, 0x8E09);
 }
-
-
-void drawBluetoothFramView(){
-    tft.fillScreen(0x0);
-    // rect 1
-    tft.drawRect(0, 0, 128, 128, 0x8E09);
-    // rect 18
-    tft.drawRect(0, 0, 128, 22, 0x8E09);
-    
-    uiPrint(24, 8,"Bluethooth",0x8E09);
-    uiPrint(7, 115,"back",0x8E09);
-    tft.fillRoundRect(77, 112, 47, 12, 5, 0x8E09);
-    uiPrint( 84, 114,"Select",0x0);
-    // bluetooth
-    tft.drawBitmap(6, 3, image_bluetooth_mini_bits, 14, 16, 0x8E09);
-}
-

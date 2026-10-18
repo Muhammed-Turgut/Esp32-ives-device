@@ -2,9 +2,11 @@
 #include <Arduino.h>
 #include <Adafruit_ST7735.h>
 #include "gps.h"
+#include "views/wifi/wifi.h"
 
 extern Gps gps;
 extern Adafruit_ST7735 tft;
+extern WifiRadio wifiRadio;
 
 extern uint16_t isActiveColor;
 extern uint16_t isDeActiveColor;
@@ -57,7 +59,7 @@ void drawSettingsView();
 
 //ortak fonksiyonlar
 void drawIconFieldCompanenet(const unsigned char *icon);
-
+void drawScreenFrameView(const char* frameName, const unsigned char *icon);
 
 //animations
 void tickGpsAnim();

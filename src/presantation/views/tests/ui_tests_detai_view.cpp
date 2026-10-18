@@ -3,35 +3,11 @@
 #include "ui_common.h"
 
 void drawTestScreenDetailView(int index) {
-  drawTestDetailFrameView();
+  drawScreenFrameView("Start Test",test_icon_bits);
   drawTestChoosMenu(index);
 
 }
 
-void drawTestDetailFrameView() {
- 
-  tft.fillScreen(0);
-  // Dikdörtgen
-   tft.drawRect(0, 0, 128, 128, 0x8e09);
-  // Dikdörtgen
-   tft.fillRoundRect(54, 112, 72, 12, 5, 0x8e09);
-   tft.drawRoundRect(54, 112, 72, 12, 5, 0x8e09);
-  // Metin
-   uiPrint(60,114, "Start Test", 0x0000, 1);
-
-   // Metin
-   uiPrint(7,114, "Back", 0x8e09, 1);
-  
-  // Dikdörtgen
-   tft.drawRect(0, 0, 128, 22, 0x8e09);
-
-  // Metin
-   uiPrint(27,7, "Tests", 0x8e09, 1);
-
-  // Book open
-   tft.drawBitmap(7, 3, test_icon_bits, 16, 16, 0x8e09);
-
-}
 
 void drawTestChoosMenu(int &chooseIndex) {
 

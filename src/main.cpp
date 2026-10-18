@@ -5,6 +5,7 @@
 #include <stack>
 #include "presantation/views/ui.h"
 #include "presantation/ui_common.h"
+#include "presantation/views/wifi/wifi.h"
 #include <BLEDevice.h> 
 #include "presantation/views/bluetooth/server_call_back.h"
 #include "gps.h"
@@ -35,6 +36,7 @@ static BLECharacteristic* isi = nullptr;
 static ServerCallBack info;
 
 Gps gps;
+WifiRadio wifiRadio;
 
 uint16_t isActiveColor = 0x8E09;
 uint16_t isDeActiveColor = 0x5AEC;
@@ -153,7 +155,7 @@ showScreen(screenStack);
 void loop() {
   buttonsUpdate();
   static unsigned long lastNav = 0;
-  
+  static unsigned long lastWifiDraw =0;
 
 
  if (buttons.okPressed) {
@@ -208,11 +210,16 @@ if (buttons.backPressed) {
   switch (screenStack.top()) {
     case 1: // WiFi menüsü
       switch (wifiChooseIndex) {
-        case 0: screenStack.push(11); drawWifiScanningView(); break;
+        case 0: screenStack.push(11); wifiRadio.startScan(); drawWifiScanningView(); break;
         case 1: screenStack.push(12); drawWifiEvilTwinView(); break;
-        case 2: screenStack.push(12); drawWifiDeauthenticationView(); break;
-        case 3: screenStack.push(12); drawWifiPacketSniffingView(); break;
+        case 2: screenStack.push(13); drawWifiDeauthenticationView(); break;
+        case 3: screenStack.push(14); drawWifiPacketSniffingView(); break;
       }
+      break;
+
+    case 11:
+      wifiRadio.startScan();
+      drawWifiScanningView();
       break;
 
     case 2: // Bluetooth menüsü
@@ -243,6 +250,13 @@ if (buttons.backPressed) {
            lastGpsDraw = millis();
     }
   }
+
+  if (!screenStack.empty() && screenStack.top() == 11) {
+  if (millis() - lastWifiDraw > 500) {
+    drawWifiScanningView();
+    lastWifiDraw = millis();
+  }
+}
 
 
   //oid drawLoopView(function<void(int index)> drawView,bool lastNav, bool btnDown, bool downWas, bool btnUp, bool upWas, int stackNumber, int index)
