@@ -67,11 +67,32 @@ static int wifiIndex = 0;
 
 void drawWifiScanningView(){
 
-    if(buttons.leftPressed){
+    char keep[18] = "";
+if (wifiRadio.count() > 0 && wifiIndex >= 0 && wifiIndex < wifiRadio.count()) {
+  strncpy(keep, wifiRadio.bssid(wifiIndex).c_str(), sizeof(keep) - 1);
+}
+
+if (wifiRadio.scanDone() && keep[0] != '\0') {
+  for (int i = 0; i < wifiRadio.count(); i++) {
+    if (strcmp(wifiRadio.bssid(i).c_str(), keep) == 0) {
+      wifiIndex = i;
+      break;
+    }
+  }
+}
+wifiRadio.startScan();
+
+if (wifiRadio.count() > 0 && wifiIndex >= wifiRadio.count()) {
+  wifiIndex = wifiRadio.count() - 1;
+}
+
+
+    if(wifiRadio.count() > 0 && buttons.leftPressed){
         Serial.println("Left Tıklması");
        wifiIndex = (wifiIndex + wifiRadio.count()  - 1) % wifiRadio.count();
     }
-    if (buttons.rightPressed)
+
+    if (wifiRadio.count() > 0 && buttons.rightPressed)
     {
       Serial.println("Right Tıklması");
       wifiIndex = (wifiIndex + 1) % wifiRadio.count() ;
@@ -81,30 +102,21 @@ void drawWifiScanningView(){
   tft.fillScreen(0);
   // Dikdörtgen
   tft.drawRect(0, 0, 128, 128, 0x8e09);
-  // Dikdörtgen
-  tft.fillRoundRect(77, 112, 47, 12, 5, 0x8e09);
-  tft.drawRoundRect(77, 112, 47, 12, 5, 0x8e09);
-  uiPrint(86,114,"Start",0x0000);
   uiPrint(7,114,"Back",0x8e09);
   tft.drawRect(0, 0, 128, 22, 0x8e09);
   uiPrint(7,7,"Wifi Scanning",0x8e09);
 
   
-  if (wifiRadio.scanDone()) {
+ if (wifiRadio.count() > 0) {
 
-    char buf[16], ssid[33], bssid[18], channel[8], rssi[16], securtyProtocol[16];
+    char buf[16], ssid[33], bssid[18], channel[8], rssi[16];
 
     snprintf(buf, sizeof(buf), "%d", wifiRadio.count());
-    snprintf(ssid, sizeof(ssid), "%s", wifiRadio.ssid(wifiIndex));
-   snprintf(bssid, sizeof(bssid), "%s", wifiRadio.bssid(wifiIndex).c_str());
+    snprintf(ssid, sizeof(ssid), "%s", wifiRadio.ssid(wifiIndex).c_str());
+    snprintf(bssid, sizeof(bssid), "%s", wifiRadio.bssid(wifiIndex).c_str());
     snprintf(channel, sizeof(channel),"%d",wifiRadio.channel(wifiIndex));
     snprintf(rssi, sizeof(rssi), "%d",wifiRadio.rssi(wifiIndex));
-   // snprintf(securtyProtocol, sizeof(securtyProtocol), "%S",wifiRadio.securityProtocol(wifiIndex));
     
-
-   Serial.println(bssid);
-   Serial.println(wifiIndex);
-
 
     uiPrint(110,7, buf,0xffff); //ortamdaki ağ sayısı
 
@@ -123,6 +135,10 @@ void drawWifiScanningView(){
     
     uiPrint(4,79,"security:",0xf800);
     uiPrint(58, 79, wifiRadio.securityProtocol(wifiIndex), 0x7bef);
+
+      // Angle right
+  tft.drawBitmap(16, 100, image_ButtonLeft_bits, 4, 7, 0xFFFF);
+  tft.drawBitmap(112, 100, image_ButtonRight_bits, 4, 7, 0xFFFF);
     
   }
   else{
@@ -136,10 +152,6 @@ void drawWifiScanningView(){
 
   }
   
-
-  // Angle right
-  tft.drawBitmap(16, 100, image_ButtonLeft_bits, 4, 7, 0xFFFF);
-  tft.drawBitmap(112, 100, image_ButtonRight_bits, 4, 7, 0xFFFF);
 
 }
 

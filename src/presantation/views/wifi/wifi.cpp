@@ -1,4 +1,6 @@
 #include "wifi.h"
+#include <string.h>
+
 
 static const char* authName(wifi_auth_mode_t a) {
   switch (a) {
@@ -20,16 +22,33 @@ void WifiRadio::begin() {
 }
 
 void WifiRadio::startScan() {
-  networkCount = 0;
-  WiFi.mode(WIFI_STA);
-  WiFi.disconnect(false);
-  WiFi.scanDelete();
+  if (WiFi.scanComplete() == WIFI_SCAN_RUNNING) return;
+  if (WiFi.getMode() != WIFI_STA) WiFi.mode(WIFI_STA);
   WiFi.scanNetworks(true);
 }
 
 bool WifiRadio::scanDone() {
   int n = WiFi.scanComplete();
   if (n < 0) return false;
+  if (n > kMaxAps) n = kMaxAps;
+
+  for (int i = 0; i < n; i++) {
+  String ssid = WiFi.SSID(i);
+  String bssid = WiFi.BSSIDstr(i);
+  const char* security = authName(WiFi.encryptionType(i));
+
+  strncpy(list[i].ssid, ssid.c_str(), sizeof(list[i].ssid) - 1);
+  list[i].ssid[sizeof(list[i].ssid) - 1] = '\0';
+
+  strncpy(list[i].bssid, bssid.c_str(), sizeof(list[i].bssid) - 1);
+  list[i].bssid[sizeof(list[i].bssid) - 1] = '\0';
+
+  strncpy(list[i].security, security, sizeof(list[i].security) - 1);
+  list[i].security[sizeof(list[i].security) - 1] = '\0';
+
+  list[i].rssi = WiFi.RSSI(i);
+  list[i].channel = WiFi.channel(i);
+  }
   networkCount = n;
   return true;
 }
@@ -40,25 +59,25 @@ int WifiRadio::count() {
 
 String WifiRadio::ssid(int i) {
   if (i < 0 || i >= networkCount) return "";
-  return WiFi.SSID(i);
+  return list[i].ssid;
 }
 
 String WifiRadio::bssid(int i) {
   if (i < 0 || i >= networkCount) return "";
-  return WiFi.BSSIDstr(i);   // "AA:BB:CC:DD:EE:FF" gibi gerçek yazı
+  return list[i].bssid;
 }
 
 int32_t WifiRadio::rssi(int i) {
   if (i < 0 || i >= networkCount) return 0;
-  return WiFi.RSSI(i);
+  return list[i].rssi;
 }
 
 int32_t WifiRadio::channel(int i) {
   if (i < 0 || i >= networkCount) return 0;
-  return WiFi.channel(i);
+  return list[i].channel;
 }
 
 const char* WifiRadio::securityProtocol(int i) {
   if (i < 0 || i >= networkCount) return "UNKNOWN";
-  return authName(WiFi.encryptionType(i));
+  return list[i].security;
 }
