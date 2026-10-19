@@ -103,6 +103,12 @@ if (wifiRadio.count() > 0 && wifiIndex >= wifiRadio.count()) {
   // Dikdörtgen
   tft.drawRect(0, 0, 128, 128, 0x8e09);
   uiPrint(7,114,"Back",0x8e09);
+
+  tft.fillRoundRect(77, 112, 47, 12, 5, 0x8e09);
+  tft.drawRoundRect(77, 112, 47, 12, 5, 0x8e09);
+  // Metin
+  uiPrint(89,114,"save",0x0000);
+
   tft.drawRect(0, 0, 128, 22, 0x8e09);
   uiPrint(7,7,"Wifi Scanning",0x8e09);
 
@@ -137,8 +143,8 @@ if (wifiRadio.count() > 0 && wifiIndex >= wifiRadio.count()) {
     uiPrint(58, 79, wifiRadio.securityProtocol(wifiIndex), 0x7bef);
 
       // Angle right
-  tft.drawBitmap(16, 100, image_ButtonLeft_bits, 4, 7, 0xFFFF);
-  tft.drawBitmap(112, 100, image_ButtonRight_bits, 4, 7, 0xFFFF);
+    tft.drawBitmap(8, 100, image_ButtonLeft_bits, 4, 7, 0xFFFF);
+    tft.drawBitmap(114, 100, image_ButtonRight_bits, 4, 7, 0xFFFF);
     
   }
   else{
