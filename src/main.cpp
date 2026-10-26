@@ -37,6 +37,7 @@ static ServerCallBack info;
 
 Gps gps;
 WifiRadio wifiRadio;
+UiButtonStruct buttonObject;
 
 uint16_t isActiveColor = 0x8E09;
 uint16_t isDeActiveColor = 0x5AEC;

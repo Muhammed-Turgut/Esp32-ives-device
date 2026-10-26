@@ -162,8 +162,57 @@ if (wifiRadio.count() > 0 && wifiIndex >= wifiRadio.count()) {
 }
 
 void drawWifiEvilTwinView() {
-    tft.fillScreen(0x0);
-    uiPrint( 27, 8,"Evil Twin",0x8E09);
+ 
+  tft.fillScreen(0x0);
+  // Dikdörtgen
+  tft.drawRect(0, 0, 128, 128, 0x8e09);
+
+  // Dikdörtgen
+  tft.drawRect(0, 0, 128, 22, 0x8e09);
+
+  // Metin
+  uiPrint(7,7,"Evil Twin",0x8e09);
+
+  // Metin
+  //uiPrint(86,11,"Start",0x0000);
+  // Dikdörtgen
+  //tft.fillRoundRect(77, 112, 47, 12, 5, 0x8e09);
+  //tft.drawRoundRect(77, 112, 47, 12, 5, 0x8e09);
+  /*uiButton(
+    UiButtonStruct()
+    .setTextPos(86,11)
+    .setText("Start")
+    .setTextColor(0x0000)
+    .setSize(47,12)
+    .setButtonPos(77, 112)
+    .setButtonColor(0x8e09)
+    
+  );
+*/
+
+
+
+uiButton(buttonObject.setSize(47, 12)
+     .setButtonPos(77, 112)
+     .setButtonColor(0x8e09)
+     .setTextPos(86, 113)
+     .setText("Start")
+     .setTextColor(0x0000));
+
+  // Metin
+  uiPrint(7,114,"Back",0x8e09);
+  
+  
+  
+  // Metin
+  uiPrint(10,30,"eduroam",0x8e09);
+
+  // Metin
+  
+  uiPrint(116,7,"6",1);
+  // Chevron right 2
+  tft.drawBitmap(-1, 26, image_ButtonRight_bits, 16, 16, 0x8e09);
+
 }
 
 void drawWifiDeauthenticationView() {

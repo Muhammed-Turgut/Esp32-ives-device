@@ -8,6 +8,7 @@ extern Gps gps;
 extern Adafruit_ST7735 tft;
 extern WifiRadio wifiRadio;
 
+
 extern uint16_t isActiveColor;
 extern uint16_t isDeActiveColor;
 
@@ -17,6 +18,29 @@ inline void uiPrint(int16_t x, int16_t y, const char* s, uint16_t color = 0x8e09
   tft.setCursor(x, y);
   tft.print(s);
 }
+
+struct UiButtonStruct {
+    const char* text = "text";
+    int width = 42;
+    int height = 12;
+    int buttonX = 82;
+    int buttonY = 111;
+    int buttonCorner = 5;
+    int textX = 86;
+    int textY = 113;
+    uint16_t textColor = 0x0000;
+    uint16_t buttonColor = 0x8e09;
+
+    UiButtonStruct& setText(const char* t)      { text = t; return *this; }
+    UiButtonStruct& setSize(int w, int h)       { width = w; height = h; return *this; }
+    UiButtonStruct& setButtonPos(int x, int y)        { buttonX = x; buttonY = y; return *this; }
+    UiButtonStruct& setButtonCorner(int c)            { buttonCorner = c; return *this; }
+    UiButtonStruct& setTextPos(int x, int y)    { textX = x; textY = y; return *this; }
+    UiButtonStruct& setTextColor(uint16_t c)    { textColor = c; return *this; }
+    UiButtonStruct& setButtonColor(uint16_t c)        { buttonColor = c; return *this; }
+};
+
+extern UiButtonStruct buttonObject;
 
 
 //drawScreenView
@@ -60,6 +84,7 @@ void drawSettingsView();
 //ortak fonksiyonlar
 void drawIconFieldCompanenet(const unsigned char *icon);
 void drawScreenFrameView(const char* frameName, const unsigned char *icon);
+void uiButton(const UiButtonStruct& uiButtonStruct);
 
 //animations
 void tickGpsAnim();
