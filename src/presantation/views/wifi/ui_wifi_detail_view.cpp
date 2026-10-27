@@ -6,9 +6,16 @@
 #include "assets/images/image_ButtonRight_bits.h"
 #include "assets/images/image_ButtonLeft_bits.h"
 #include "assets/images/image_ButtonRight_bits.h"
+#include "assets/images/angle_down_bits.h"
+#include "assets/images/angle_up_bits.h"
 #include "presantation/ui_common.h"
 #include <WiFi.h>
 #include "core/buttons.h"
+
+
+int evilTwinCount;
+int evilTwinSelectedChoos;
+bool evilTwinisSelected = false;
 
 void drawScreenWifiDetailView(int selectChoose) {
     
@@ -155,63 +162,101 @@ if (wifiRadio.count() > 0 && wifiIndex >= wifiRadio.count()) {
  
   uiPrint(28,64,"searching...",0x7bef);
 
-
   }
-  
-
 }
 
 void drawWifiEvilTwinView() {
+
+   int evilTwin = true;
+  if(buttons.okPressed && evilTwin){
+    evilTwinisSelected = true;
+  }
+
+  if(evilTwinisSelected){
+
+   evilTwinSelectCountNetwork();
+
+  }else{
+    tft.fillScreen(0x0);
+    // Dikdörtgen
+    tft.drawRect(0, 0, 128, 128, 0x8e09);
+
+    // Dikdörtgen
+    tft.drawRect(0, 0, 128, 22, 0x8e09);
+
+    // Metin
+    uiPrint(7,7,"Evil Twin",0x8e09);
+
+    uiButton(buttonObject.setSize(47, 12)
+       .setButtonPos(77, 112)
+       .setButtonColor(0x8e09)
+       .setTextPos(86, 113)
+       .setText("Start")
+       .setTextColor(0x0000));
+
+    // Metin
+    uiPrint(7,114,"Back",0x8e09);
+
+  
+    // Metin
+    uiPrint(10,30,"eduroam",0x8e09);
+
+    // Metin
+  
+    uiPrint(116,7,"6",1);
+    // Chevron right 2
+    tft.drawBitmap(-1, 26, image_ButtonRight_bits, 16, 16, 0x8e09);
+  }
  
-  tft.fillScreen(0x0);
+  
+
+
+}
+
+void evilTwinSelectCountNetwork() {
+
+  //bu fonksiyon eviltwinde seçilen ağ dan kaç kopya üretileceğini seçmeye yarıyor.
+
+  tft.fillScreen(0);
   // Dikdörtgen
   tft.drawRect(0, 0, 128, 128, 0x8e09);
-
   // Dikdörtgen
-  tft.drawRect(0, 0, 128, 22, 0x8e09);
+  tft.fillRoundRect(67, 112, 58, 12, 5, 0x8e09);
+  tft.drawRoundRect(67, 112, 58, 12, 5, 0x8e09);
 
   // Metin
-  uiPrint(7,7,"Evil Twin",0x8e09);
-
-  // Metin
-  //uiPrint(86,11,"Start",0x0000);
-  // Dikdörtgen
-  //tft.fillRoundRect(77, 112, 47, 12, 5, 0x8e09);
-  //tft.drawRoundRect(77, 112, 47, 12, 5, 0x8e09);
-  /*uiButton(
-    UiButtonStruct()
-    .setTextPos(86,11)
-    .setText("Start")
-    .setTextColor(0x0000)
-    .setSize(47,12)
-    .setButtonPos(77, 112)
-    .setButtonColor(0x8e09)
-    
-  );
-*/
-
-
-
-uiButton(buttonObject.setSize(47, 12)
-     .setButtonPos(77, 112)
-     .setButtonColor(0x8e09)
-     .setTextPos(86, 113)
-     .setText("Start")
-     .setTextColor(0x0000));
+  uiPrint(83,114,"Start",0x0000);
 
   // Metin
   uiPrint(7,114,"Back",0x8e09);
-  
-  
-  
-  // Metin
-  uiPrint(10,30,"eduroam",0x8e09);
 
   // Metin
+  uiPrint(37,8,"Evil Twin",0x8e09);
+
+  // Dikdörtgen
+  tft.fillRect(1, 60, 126, 28, 0x8e09);
+  tft.drawRect(1, 60, 126, 28, 0x8e09);
+  // Dikdörtgen
+  tft.fillRoundRect(36, 60, 55, 28, 8, 0x0000);
+  tft.drawRoundRect(36, 60, 55, 28, 8, 0x8e09);
+
+  // Metin
+  uiPrint(52,66,"10",0x8e09,2);
+
+  // Metin
+  uiPrint(13,21,"Please select how",0xf800);
+
+  // Metin
+  uiPrint(4,33,"many evil twins will",0xf800);
+
+  // Metin
+  uiPrint(34,44,"be created.",0xf800);
+
   
-  uiPrint(116,7,"6",1);
-  // Chevron right 2
-  tft.drawBitmap(-1, 26, image_ButtonRight_bits, 16, 16, 0x8e09);
+  // Angle up
+  tft.drawBitmap(91, 60, angle_up_bits, 14, 14, 0x0000);
+  // Angle down
+  tft.drawBitmap(91, 74, angle_down_bits, 14, 14, 0x0000);
 
 }
 

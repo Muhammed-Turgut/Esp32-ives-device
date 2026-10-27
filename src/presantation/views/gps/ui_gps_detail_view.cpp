@@ -39,8 +39,18 @@ void drawScreenGPSFrameView(){
     tft.drawRect(0, 0, 128, 128, 0x8E09);
     tft.drawRect(0, 0, 128, 22, 0x8E09);
     uiPrint(27, 8, "GPS",0x8E09);
+
     tft.fillRoundRect(65, 111, 59, 12, 5, 0x8E09);
     uiPrint(72, 113,"look map",0x0);
+
+    uiButton(buttonObject.setSize(59, 12)
+     .setButtonPos(65, 111)
+     .setButtonColor(0x8e09)
+     .setTextPos(72, 113)
+     .setText("look map")
+     .setTextColor(0x0000));
+
+
     // string 22
     uiPrint(6, 114,"back",0x8E09);
     // map_navigation_pin_location_2__Streamline_Pixel

@@ -199,7 +199,6 @@ if (buttons.backPressed) {
 
 
   if (buttons.okPressed) {
-  buttons.okPressed = false;
 
   if (screenStack.empty()) {
     screenStack.push(screen);
@@ -250,11 +249,18 @@ if (buttons.backPressed) {
   }
 
   if (!screenStack.empty() && screenStack.top() == 11) {
-  if (buttons.leftPressed || buttons.rightPressed || millis() - lastWifiDraw > 500) {
-  drawWifiScanningView();
-  lastWifiDraw = millis();
-}
-}
+     if (buttons.leftPressed || buttons.rightPressed || millis() - lastWifiDraw > 500) {
+      drawWifiScanningView();
+      lastWifiDraw = millis();
+     }
+  }
+
+  if (!screenStack.empty() && screenStack.top() == 12) {
+     if (buttons.leftPressed || buttons.rightPressed || millis() - lastWifiDraw > 500) {
+      drawWifiEvilTwinView();
+      lastWifiDraw = millis();
+     }
+  }
 
 
   //oid drawLoopView(function<void(int index)> drawView,bool lastNav, bool btnDown, bool downWas, bool btnUp, bool upWas, int stackNumber, int index)

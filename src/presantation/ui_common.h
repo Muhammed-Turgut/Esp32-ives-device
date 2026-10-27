@@ -62,6 +62,7 @@ void drawWifiChooseMenu(int chooseIndex);
 void drawScreenWifiDetailView();
 void drawWifiScanningView();
 void drawWifiEvilTwinView();
+void evilTwinSelectCountNetwork();
 void drawWifiDeauthenticationView();
 void drawWifiPacketSniffingView();
 
